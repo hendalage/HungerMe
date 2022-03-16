@@ -3,11 +3,27 @@ import datetime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, Integer, SmallInteger, String, Time, \
     create_engine
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
+# Base = declarative_base()
+# metadata = Base.metadata
+# engine = create_engine('postgresql://postgres:1234@localhost/hm1')
+# Base.metadata.create_all(engine)
+# db_session = scoped_session(sessionmaker())
+# Session = sessionmaker()
+# session = Session.configure(bind=engine)
+# Base.query = session.query_property()
+
+SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:1234@localhost/hm1'
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+session = scoped_session(Session)
 Base = declarative_base()
-metadata = Base.metadata
+# Note the line below
+Base.query = session.query_property()
+
 
 
 class Restaurant(Base):
@@ -119,5 +135,7 @@ class Reservation(Base):
     user = relationship('User')
 
 
-engine = create_engine('postgresql://postgres:1234@localhost/hm1')
-Base.metadata.create_all(engine)
+
+
+
+
