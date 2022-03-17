@@ -76,10 +76,44 @@ class Menu(Base):
     description = Column(String(255), nullable=False)
     restaurant_id = Column(ForeignKey('restaurant.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     status = Column(SmallInteger, nullable=False)
-    created_at = Column(DateTime, nullable=False)
-    updated_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     restaurant = relationship('Restaurant')
+
+    @staticmethod
+    def get_schema():
+        """
+        method to get schema
+        """
+        schema = {
+            "type": "object",
+            "required": ["name", "restaurant_id"]
+        }
+        props = schema["properties"] = {}
+        props["name"] = {
+            "description": "Menu name",
+            "type": "string"
+        }
+        props["description"] = {
+            "description": "Menu description",
+            "type": "string"
+        }
+        props["restaurant_id"] = {
+            "description": "Restaurant id",
+            "type": "string"
+        }
+        return schema
+
+    def serialize(self):
+        role = {
+            "name": self.name,
+            "description": self.description,
+            "restaurant_address": self.restaurant.name,
+            "restaurant_address": self.restaurant.address,
+            "restaurant_contact_no": self.restaurant.contact_no
+        }
+        return role
 
 
 class User(Base):

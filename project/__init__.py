@@ -49,11 +49,11 @@ def create_app(test_config=None):
     db.init_app(app)
     cache.init_app(app)
 
-    from project.converters import (UserConverter)
+    from project.converters import (UserConverter, MenuConverter)
 
     # Add converters
     app.url_map.converters["User"] = UserConverter
-    # app.url_map.converters["Department"] = DepartmentConverter
+    app.url_map.converters["Menu"] = MenuConverter
     # app.url_map.converters["Organization"] = OrganizationConverter
     # app.url_map.converters["LeavePlan"] = LeavePlanConverter
     # app.url_map.converters["Employee"] = EmployeeConverter

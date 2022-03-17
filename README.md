@@ -14,7 +14,7 @@ __Add following- Run in a powershell (Windows)__
 
 * $env:FLASK_ENV = "development"
 * $env:FLASK_APP = "project"
-* run flask
+* flask run
 
 
 
