@@ -61,7 +61,7 @@ class MenuItem(Resource):
         try:
             data = request.get_json()
 
-            new_menu = Menu(name=data['name'], description=data['description'], restaurant_id=data['restaurant_id'],
+            new_menu = Menu(name=data['name'], description=data['description'], restaurant_id=data['restaurant_id'], price=data['price'],
                             status=data['status'])
 
             db.session.add(new_menu)
@@ -92,7 +92,8 @@ class MenuItem(Resource):
 
         data = request.get_json()
         db_role.name = data['name']
-        db_role.name = data['description']
+        db_role.description = data['description']
+        db_role.name = data['price']
 
         try:
             db.session.commit()

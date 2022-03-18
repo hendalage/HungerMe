@@ -1,7 +1,7 @@
 import uuid
 import datetime
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, Integer, SmallInteger, String, Time, \
+from sqlalchemy import BigInteger, Column, Float, Date, DateTime, ForeignKey, Integer, SmallInteger, String, Time, \
     create_engine
 from sqlalchemy.orm import relationship, scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -75,6 +75,7 @@ class Menu(Base):
     name = Column(String(255), nullable=False)
     description = Column(String(255), nullable=False)
     restaurant_id = Column(ForeignKey('restaurant.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
+    price = Column(Float, nullable=True)
     status = Column(SmallInteger, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
@@ -109,6 +110,7 @@ class Menu(Base):
         role = {
             "name": self.name,
             "description": self.description,
+            "price": self.price,
             "restaurant_address": self.restaurant.name,
             "restaurant_address": self.restaurant.address,
             "restaurant_contact_no": self.restaurant.contact_no
