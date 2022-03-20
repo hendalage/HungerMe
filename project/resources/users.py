@@ -35,18 +35,18 @@ class UserCollection(Resource):
 class LoginCollection(Resource):
 
     @classmethod
-    def get(cls):
-        auth = request.authorization
+    def post(cls):
+        auth = request.get_json()
 
-        if not auth or not auth.username or not auth.password:
+        if not auth or not auth['username'] or not auth['password']:
             return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
-        user = db.session.query(User).filter_by(email=auth.username).first()
+        user = db.session.query(User).filter_by(email=auth['username']).first()
 
         if not user:
             return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
-        if check_password_hash(user.password, auth.password):
+        if check_password_hash(user.password, auth['password']):
             token = jwt.encode(
                 {'id': str(user.id), 'exp': datetime.utcnow() + timedelta(minutes=30)},
                 'thisissecret')

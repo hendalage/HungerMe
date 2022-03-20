@@ -20,8 +20,9 @@ class MenuCollection(Resource):
             menu_data['name'] = menu.name
             menu_data['description'] = menu.description
             menu_data['restaurant_id'] = menu.restaurant_id
+            menu_data['price'] = menu.price
             menu_data['status'] = menu.status
-            menu_data['restaurant_address'] = menu.restaurant.name
+            menu_data['restaurant_name'] = menu.restaurant.name
             menu_data['restaurant_address'] = menu.restaurant.address
             menu_data['restaurant_contact_no'] = menu.restaurant.contact_no
             menu_list.append(menu_data)
@@ -68,7 +69,8 @@ class MenuItem(Resource):
             db.session.commit()
 
             return jsonify({'message': 'New menu added successfully!'})
-        except:
+        except Exception as e:
+            print(e)
             return make_response('Could not add menu item', 400, {'message': 'Please check your entries!"'})
 
     @classmethod

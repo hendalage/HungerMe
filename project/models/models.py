@@ -111,7 +111,7 @@ class Menu(Base):
             "name": self.name,
             "description": self.description,
             "price": self.price,
-            "restaurant_address": self.restaurant.name,
+            "restaurant_name": self.restaurant.name,
             "restaurant_address": self.restaurant.address,
             "restaurant_contact_no": self.restaurant.contact_no
         }
