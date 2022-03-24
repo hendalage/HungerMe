@@ -1,5 +1,5 @@
 from flask import Response, request, jsonify, make_response
-from project.utils import create_error_message
+from project.utils import create_error_message, token_required
 from project.models.models import Menu, Restaurant
 from project import db
 from jsonschema import validate, ValidationError
@@ -9,6 +9,7 @@ from flask_restful import Resource
 class MenuCollection(Resource):
 
     @classmethod
+    @token_required
     def get(cls, restaurant_id):
         menus = db.session.query(Menu).filter_by(restaurant_id=restaurant_id).join(Restaurant).all()
 
@@ -33,6 +34,7 @@ class MenuCollection(Resource):
 class MenuItem(Resource):
 
     @classmethod
+    @token_required
     def get(cls, menu_id):
 
         try:
@@ -43,6 +45,7 @@ class MenuItem(Resource):
             return make_response('Could not find menu item', 400, {'message': 'Please check your entries!"'})
 
     @classmethod
+    @token_required
     def post(cls):
 
         if not request.json:
@@ -74,6 +77,7 @@ class MenuItem(Resource):
             return make_response('Could not add menu item', 400, {'message': 'Please check your entries!"'})
 
     @classmethod
+    @token_required
     def put(cls, menu_id):
 
         db_role = Menu.query.filter_by(id=menu_id).first()
@@ -108,6 +112,7 @@ class MenuItem(Resource):
         return make_response('Success', 201, {'message': 'Successfully updated!"'})
 
     @classmethod
+    @token_required
     def delete(cls, menu_id):
         db.session.query().filter_by(id=menu_id).delete()
         db.session.commit()

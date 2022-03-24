@@ -30,12 +30,13 @@ def token_required(f):
             return jsonify({'message': 'Token is missing!'}), 401
 
         try:
-            data = jwt.decode(token, 'thisissecret')
+            data = jwt.decode(token, 'thisissecret', algorithms=['HS256'])
             current_user = User.query.filter_by(id=data['id']).first()
-        except:
+        except Exception as e:
+            print(e)
             return jsonify({'message': 'Token is invalid!'}), 401
 
-        return f(current_user, *args, **kwargs)
+        return f(*args, **kwargs)
 
     return decorated
 
