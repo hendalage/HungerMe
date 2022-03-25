@@ -1,7 +1,7 @@
 # PWP SPRING 2021
 # PROJECT NAME
 # Group information
-* Student 1. Ashan Chameera
+* Student 1. Ashan Chameera1
 * Student 2. Name and email
 * Student 3. Name and email
 * Student 3. Name and emailcccccccc
