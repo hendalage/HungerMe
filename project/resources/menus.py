@@ -99,7 +99,7 @@ class MenuItem(Resource):
         data = request.get_json()
         db_role.name = data['name']
         db_role.description = data['description']
-        db_role.name = data['price']
+        db_role.price = data['price']
 
         try:
             db.session.commit()
