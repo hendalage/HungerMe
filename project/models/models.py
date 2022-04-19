@@ -33,8 +33,8 @@ class Restaurant(Base):
     name = Column(String(255))
     address = Column(String(255))
     contact_no = Column(String(15))
-    created_at = Column(DateTime)
-    updated_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
 
 
 class Employee(Base):

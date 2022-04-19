@@ -27,12 +27,12 @@ def create_app(test_config=None):
     )
     # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost/hm1'
 
-    # app.config["SWAGGER"] = {
-    #     "title": "HR System API",
-    #     "openapi": "3.0.3",
-    #     "uiversion": 3,
-    # }
-    # swagger = Swagger(app, template_file="doc/hrsystem.yml")
+    app.config["SWAGGER"] = {
+        "title": "HungerMe API",
+        "openapi": "3.0.3",
+        "uiversion": 3,
+    }
+    swagger = Swagger(app, template_file="doc/hungerme.yml")
 
     app.config["CACHE_TYPE"] = "FileSystemCache"
     app.config["CACHE_DIR"] = "cache"
