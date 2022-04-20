@@ -30,6 +30,7 @@ class UserConverter(BaseConverter):
         """
         return str(value.id)
 
+
 class MenuConverter(BaseConverter):
     """
     Converter for Menu entity in URL parameter
