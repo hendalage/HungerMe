@@ -100,7 +100,7 @@ paths:
               - id: 319c42f7-3035-4ad9-8b86-9de37ae62a4d
                 name: Pizza
                 description: Large Kaana Pizza
-              - restaurant_id: 3a9e5c1a-acdb-450c-a85d-dfcaface1976
+                restaurant_id: 3a9e5c1a-acdb-450c-a85d-dfcaface1976
                 price: 12.30
                 status: 1
 #    post:
