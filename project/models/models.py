@@ -136,8 +136,8 @@ class User(Base):
     restaurant = relationship('Restaurant')
 
 
-class Order(Base):
-    __tablename__ = 'orders'
+class Oder(Base):
+    __tablename__ = 'oders'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(ForeignKey('user.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
@@ -152,6 +152,41 @@ class Order(Base):
     menu = relationship('Menu')
     restaurant = relationship('Restaurant')
     user = relationship('User')
+
+    @staticmethod
+    def get_schema():
+        """
+        method to get schema
+        """
+        schema = {
+            "type": "object",
+            "required": ["name", "restaurant_id"]
+        }
+        props = schema["properties"] = {}
+        props["name"] = {
+            "description": "Menu name",
+            "type": "string"
+        }
+        props["description"] = {
+            "description": "Menu description",
+            "type": "string"
+        }
+        props["restaurant_id"] = {
+            "description": "Restaurant id",
+            "type": "string"
+        }
+        return schema
+
+    def serialize(self):
+        role = {
+            "name": self.name,
+            "description": self.description,
+            "price": self.price,
+            "restaurant_name": self.restaurant.name,
+            "restaurant_address": self.restaurant.address,
+            "restaurant_contact_no": self.restaurant.contact_no
+        }
+        return role
 
 
 class Reservation(Base):
