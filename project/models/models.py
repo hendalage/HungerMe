@@ -62,10 +62,45 @@ class Inventory(Base):
     name = Column(String(255), nullable=False)
     description = Column(String(255), nullable=False)
     qty = Column(Integer, nullable=False)
-    created_at = Column(DateTime, nullable=False)
-    updated_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     restaurant = relationship('Restaurant')
+
+    @staticmethod
+    def get_schema():
+        """
+        method to get schema
+        """
+        schema = {
+            "type": "object",
+            "required": ["name", "restaurant_id"]
+        }
+        props = schema["properties"] = {}
+        props["name"] = {
+            "description": "Item name",
+            "type": "string"
+        }
+        props["description"] = {
+            "description": "Item description",
+            "type": "string"
+        }
+        props["restaurant_id"] = {
+            "description": "Restaurant id",
+            "type": "string"
+        }
+        return schema
+
+    def serialize(self):
+        role = {
+            "name": self.name,
+            "description": self.description,
+            "qty": self.qty,
+            "restaurant_name": self.restaurant.name,
+            "restaurant_address": self.restaurant.address,
+            "restaurant_contact_no": self.restaurant.contact_no
+        }
+        return role
 
 
 class Menu(Base):

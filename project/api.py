@@ -34,4 +34,4 @@ api.add_resource(OderItem, "/oder/new", "/oder/update/<string:oder_id>", "/oder/
 
 # Inventory related resources
 api.add_resource(InventoryCollection, "/inventory/list/<uuid:restaurant_id>")
-api.add_resource(InventoryItem, "/inventory/list/<uuid:restaurant_id>")
+api.add_resource(InventoryItem, "/inventory/new", "/inventory/update/<string:inventory_id>", "/inventory/delete/<string:inventory_id>", "/inventory/get/<string:inventory_id>")

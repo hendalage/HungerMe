@@ -60,15 +60,15 @@ class InventoryItem(Resource):
         try:
             data = request.get_json()
 
-            new_item = Inventory(restaurant_id=data['restaurant_id'], name=data['name'], description=data['description'], qty=data['qty'], status=data['status'])
+            new_item = Inventory(restaurant_id=data['restaurant_id'], name=data['name'], description=data['description'], qty=data['qty'])
 
             db.session.add(new_item)
             db.session.commit()
 
-            return jsonify({'message': 'New menu added successfully!'})
+            return jsonify({'message': 'New item added to the inventory successfully!'})
         except Exception as e:
             print(e)
-            return make_response('Could not add menu item', 400, {'message': 'Please check your entries!"'})
+            return make_response('Could not add inventory item', 400, {'message': 'Please check your entries!"'})
 
     @classmethod
     # @token_required
