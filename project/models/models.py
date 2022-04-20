@@ -136,8 +136,8 @@ class User(Base):
     restaurant = relationship('Restaurant')
 
 
-class Oder(Base):
-    __tablename__ = 'oders'
+class Order(Base):
+    __tablename__ = 'orders'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(ForeignKey('user.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
@@ -146,8 +146,8 @@ class Oder(Base):
     status = Column(SmallInteger, nullable=False)
     total = Column(Integer)
     qty = Column(Integer)
-    created_at = Column(DateTime, nullable=False)
-    updated_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     menu = relationship('Menu')
     restaurant = relationship('Restaurant')
@@ -160,31 +160,38 @@ class Oder(Base):
         """
         schema = {
             "type": "object",
-            "required": ["name", "restaurant_id"]
+            "required": ["user_id", "restaurant_id"]
         }
         props = schema["properties"] = {}
-        props["name"] = {
-            "description": "Menu name",
-            "type": "string"
-        }
-        props["description"] = {
-            "description": "Menu description",
+        props["user_id"] = {
+            "description": "User_id",
             "type": "string"
         }
         props["restaurant_id"] = {
             "description": "Restaurant id",
             "type": "string"
         }
+        props["menu_id"] = {
+            "description": "Menu id",
+            "type": "string"
+        }
+        props["qty"] = {
+            "description": "Quantity",
+            "type": "number"
+        }
+        props["status"] = {
+            "description": "order status",
+            "type": "number"
+        }
         return schema
 
     def serialize(self):
         role = {
-            "name": self.name,
-            "description": self.description,
-            "price": self.price,
-            "restaurant_name": self.restaurant.name,
-            "restaurant_address": self.restaurant.address,
-            "restaurant_contact_no": self.restaurant.contact_no
+            "user_id": self.user_id,
+            "restaurant_id": self.restaurant_id,
+            "menu_id": self.menu_id,
+            "quantity": self.qty,
+            "status": self.status
         }
         return role
 
