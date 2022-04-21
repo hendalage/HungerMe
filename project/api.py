@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask_restful import Api
 from project.resources.users import UserCollection, LoginCollection
 from project.resources.menus import MenuCollection, MenuItem
-from project.resources.oders import OderCollection, OderItem
+from project.resources.orders import OrderCollection, OrderItem
 from project.resources.inventory import InventoryCollection, InventoryItem
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
@@ -19,7 +19,6 @@ api.add_resource(UserCollection, "/user/")
 api.add_resource(LoginCollection, "/login")
 
 
-
 # menu related resources
 api.add_resource(MenuCollection, "/menu/list/<uuid:restaurant_id>")
 api.add_resource(MenuItem, "/menu/new", "/menu/update/<string:menu_id>", "/menu/delete/<string:menu_id>", "/menu/get/<string:menu_id>")
@@ -27,9 +26,9 @@ api.add_resource(MenuItem, "/menu/new", "/menu/update/<string:menu_id>", "/menu/
 # api.add_resource(MenuItem, "/menu/delete/<string:menu_id>")
 # api.add_resource(MenuItem, "/menu/get/<string:menu_id>")
 
-# oder related resources
-api.add_resource(OderCollection, "/oder/list/<uuid:restaurant_id>")
-api.add_resource(OderItem, "/oder/new", "/oder/update/<string:oder_id>", "/oder/delete/<string:oder_id>", "/oder/get/<string:oder_id>")
+# order related resources
+api.add_resource(OrderCollection, "/order/list/<uuid:restaurant_id>")
+api.add_resource(OrderItem, "/order/new", "/order/update/<string:order_id>", "/order/delete/<string:order_id>", "/order/get/<string:order_id>")
 
 
 # Inventory related resources

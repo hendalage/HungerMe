@@ -171,8 +171,8 @@ class User(Base):
     restaurant = relationship('Restaurant')
 
 
-class Oder(Base):
-    __tablename__ = 'oders'
+class Order(Base):
+    __tablename__ = 'orders'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(ForeignKey('user.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
@@ -239,9 +239,6 @@ class Reservation(Base):
 
     restaurant = relationship('Restaurant')
     user = relationship('User')
-
-
-
 
 
 

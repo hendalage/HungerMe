@@ -1,51 +1,51 @@
 from flask import Response, request, jsonify, make_response
 from project.utils import create_error_message, token_required
-from project.models.models import Restaurant, User, Oder
+from project.models.models import Restaurant, User, Order
 from project import db
 from jsonschema import validate, ValidationError
 from flask_restful import Resource
 
 
-class OderCollection(Resource):
+class OrderCollection(Resource):
 
     @classmethod
     # @token_required
     def get(cls, restaurant_id):
-        oders = db.session.query(Oder).filter_by(restaurant_id=restaurant_id).join(Restaurant).join(User).all()
+        orders = db.session.query(Order).filter_by(restaurant_id=restaurant_id).join(Restaurant).join(User).all()
 
-        oder_list = []
-        print(oders)
-        for oder in oders:
-            oder_data = {}
-            oder_data['id'] = oder.id
-            oder_data['name'] = oder.name
-            oder_data['description'] = oder.description
-            oder_data['restaurant_id'] = oder.restaurant_id
-            oder_data['price'] = oder.price
-            oder_data['status'] = oder.status
-            oder_data['restaurant_name'] = oder.restaurant.name
-            oder_data['restaurant_address'] = oder.restaurant.address
-            oder_data['restaurant_contact_no'] = oder.restaurant.contact_no
-            oder_data['user_name'] = oder.user.name
-            oder_data['user_contact_no'] = oder.user.contact_no
-            oder_data['user_address'] = oder.user.address
-            oder_list.append(oder_data)
+        order_list = []
+        print(orders)
+        for order in orders:
+            order_data = {}
+            order_data['id'] = order.id
+            order_data['name'] = order.name
+            order_data['description'] = order.description
+            order_data['restaurant_id'] = order.restaurant_id
+            order_data['price'] = order.price
+            order_data['status'] = order.status
+            order_data['restaurant_name'] = order.restaurant.name
+            order_data['restaurant_address'] = order.restaurant.address
+            order_data['restaurant_contact_no'] = order.restaurant.contact_no
+            order_data['user_name'] = order.user.name
+            order_data['user_contact_no'] = order.user.contact_no
+            order_data['user_address'] = order.user.address
+            order_list.append(order_data)
 
-        return jsonify({'oders': oder_list})
+        return jsonify({'orders': order_list})
 
 
-class OderItem(Resource):
+class OrderItem(Resource):
 
     @classmethod
     # @token_required
-    def get(cls, oder_id):
+    def get(cls, order_id):
 
         try:
-            oder = db.session.query(Oder).filter_by(id=oder_id).join(Restaurant).first()
+            order = db.session.query(Order).filter_by(id=order_id).join(Restaurant).first()
 
-            return oder.serialize()
+            return order.serialize()
         except:
-            return make_response('Could not find oder item', 400, {'message': 'Please check your oder!"'})
+            return make_response('Could not find order item', 400, {'message': 'Please check your order!"'})
 
     @classmethod
     # @token_required
@@ -58,7 +58,7 @@ class OderItem(Resource):
             )
 
         try:
-            validate(request.json, Oder.get_schema())
+            validate(request.json, Order.get_schema())
         except ValidationError:
             return create_error_message(
                 400, "Invalid JSON document",
@@ -68,22 +68,22 @@ class OderItem(Resource):
         try:
             data = request.get_json()
 
-            new_oder = Oder(name=data['name'], description=data['description'], restaurant_id=data['restaurant_id'], price=data['price'],
+            new_order = Order(name=data['name'], description=data['description'], restaurant_id=data['restaurant_id'], price=data['price'],
                             status=data['status'])
 
-            db.session.add(new_oder)
+            db.session.add(new_order)
             db.session.commit()
 
-            return jsonify({'message': 'New oder added successfully!'})
+            return jsonify({'message': 'New order added successfully!'})
         except Exception as e:
             print(e)
-            return make_response('Could not add oder', 400, {'message': 'Please check your items!"'})
+            return make_response('Could not add order', 400, {'message': 'Please check your items!"'})
 
     @classmethod
     # @token_required
-    def put(cls, oder_id):
+    def put(cls, order_id):
 
-        db_role = Oder.query.filter_by(id=oder_id).first()
+        db_role = Order.query.filter_by(id=order_id).first()
 
         if not request.json:
             return create_error_message(
@@ -92,7 +92,7 @@ class OderItem(Resource):
             )
 
         try:
-            validate(request.json, Oder.get_schema())
+            validate(request.json, Order.get_schema())
         except ValidationError:
             return create_error_message(
                 400, "Invalid JSON document",
@@ -116,8 +116,8 @@ class OderItem(Resource):
 
     @classmethod
     @token_required
-    def delete(cls, oder_id):
-        db.session.query().filter_by(id=oder_id).delete()
+    def delete(cls, order_id):
+        db.session.query().filter_by(id=order_id).delete()
         db.session.commit()
 
         return make_response('Success', 204, {'message': 'Successfully deleted!"'})
