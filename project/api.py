@@ -4,6 +4,7 @@ from project.resources.users import UserCollection, LoginCollection
 from project.resources.menus import MenuCollection, MenuItem
 from project.resources.orders import OrderCollection, OrderItem
 from project.resources.inventory import InventoryCollection, InventoryItem
+from project.resources.reservation import ReservationCollection, ReservationItem
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 api = Api(api_bp)
@@ -34,3 +35,7 @@ api.add_resource(OrderItem, "/order/new", "/order/update/<string:order_id>", "/o
 # Inventory related resources
 api.add_resource(InventoryCollection, "/inventory/list/<uuid:restaurant_id>")
 api.add_resource(InventoryItem, "/inventory/new", "/inventory/update/<string:inventory_id>", "/inventory/delete/<string:inventory_id>", "/inventory/get/<string:inventory_id>")
+
+# Reservation related resources
+api.add_resource(ReservationCollection, "/reservation/list/<uuid:restaurant_id>")
+api.add_resource(ReservationItem, "/reservation/new", "/reservation/update/<string:reservation_id>", "/reservation/delete/<string:reservation_id>", "/reservation/get/<string:reservation_id>")

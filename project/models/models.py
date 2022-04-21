@@ -233,12 +233,48 @@ class Reservation(Base):
     date = Column(Date, nullable=False)
     from_time = Column(Time, nullable=False)
     to_time = Column(Time, nullable=False)
-    created_at = Column(DateTime, nullable=False)
-    updated_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     description = Column(Integer)
 
     restaurant = relationship('Restaurant')
     user = relationship('User')
 
+    @staticmethod
+    def get_schema():
+        """
+        method to get schema
+        """
+        schema = {
+            "type": "object",
+            "required": ["user_id", "restaurant_id"]
+        }
+        props = schema["properties"] = {}
+        props["user_id"] = {
+            "description": "Reserved user",
+            "type": "string"
+        }
+        props["description"] = {
+            "description": "Item description",
+            "type": "string"
+        }
+        props["restaurant_id"] = {
+            "description": "Restaurant id",
+            "type": "string"
+        }
+        return schema
+
+    def serialize(self):
+        role = {
+            "user_id": self.user_id,
+            "restaurant_id": self.restaurant_id,
+            "date": self.date,
+            "from_time": self.from_time,
+            "to_time": self.to_time,
+            "restaurant_name": self.restaurant.name,
+            "restaurant_address": self.restaurant.address,
+            "restaurant_contact_no": self.restaurant.contact_no
+        }
+        return role
 
 
