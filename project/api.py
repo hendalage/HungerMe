@@ -38,4 +38,4 @@ api.add_resource(InventoryItem, "/inventory/new", "/inventory/update/<string:inv
 
 # Reservation related resources
 api.add_resource(ReservationCollection, "/reservation/list/<uuid:restaurant_id>")
-api.add_resource(ReservationItem, "/reservation/new", "/reservation/update/<string:reservation_id>", "/reservation/delete/<string:reservation_id>", "/reservation/get/<string:reservation_id>")
+api.add_resource(ReservationItem, "/reservation/new", "/reservation/update/<string:reservation_id>", "/reservation/delete/<string:reservation_id>", "/reservation/get/<string:user_id>")

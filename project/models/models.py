@@ -266,11 +266,11 @@ class Reservation(Base):
 
     def serialize(self):
         role = {
-            "user_id": self.user_id,
-            "restaurant_id": self.restaurant_id,
-            "date": self.date,
-            "from_time": self.from_time,
-            "to_time": self.to_time,
+            "name": self.user.name,
+            "contact_no": self.user.contact_no,
+            "date": self.date.strftime("%m/%d/%Y"),
+            "from_time": self.from_time.strftime("%H:%M:%S"),
+            "to_time": self.to_time.strftime("%H:%M:%S"),
             "restaurant_name": self.restaurant.name,
             "restaurant_address": self.restaurant.address,
             "restaurant_contact_no": self.restaurant.contact_no

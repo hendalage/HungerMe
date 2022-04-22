@@ -39,7 +39,7 @@ class ReservationItem(Resource):
     # @token_required
     def get(cls, user_id):  # 08bb1373-7b11-4d32-a5f4-d40cbf63fa3f
         try:
-            reservation = db.session.query(Reservation).filter_by(id=user_id).join(Restaurant).first()
+            reservation = db.session.query(Reservation).filter_by(user_id=user_id).join(Restaurant).first()
             return reservation.serialize()
         except:
             return make_response('Could not find reservation', 400, {'message': 'Please check your entries!"'})
@@ -54,7 +54,7 @@ class ReservationItem(Resource):
             )
 
         try:
-            validate(request.json, Inventory.get_schema())
+            validate(request.json, Reservation.get_schema())
         except ValidationError:
             return create_error_message(
                 400, "Invalid JSON document",
@@ -64,21 +64,21 @@ class ReservationItem(Resource):
         try:
             data = request.get_json()
 
-            new_item = Inventory(restaurant_id=data['restaurant_id'], name=data['name'], description=data['description'], qty=data['qty'])
+            new_reservation = Reservation(user_id=data['user_id'], restaurant_id=data['restaurant_id'], date=data['date'], from_time=data['from_time'], to_time=data['to_time'], description=data['description'])
 
-            db.session.add(new_item)
+            db.session.add(new_reservation)
             db.session.commit()
 
-            return jsonify({'message': 'New item added to the inventory successfully!'})
+            return jsonify({'message': 'New item added to the reservation successfully!'})
         except Exception as e:
             print(e)
-            return make_response('Could not add inventory item', 400, {'message': 'Please check your entries!"'})
+            return make_response('Could not add reservation', 400, {'message': 'Please check your entries!"'})
 
     @classmethod
     # @token_required
-    def put(cls, inventory_id):
+    def put(cls, reservation_id):
 
-        inventory_item = Inventory.query.filter_by(id=inventory_id).first()
+        reservation = Reservation.query.filter_by(id=reservation_id).first()
 
         if not request.json:
             return create_error_message(
@@ -87,7 +87,7 @@ class ReservationItem(Resource):
             )
 
         try:
-            validate(request.json, Inventory.get_schema())
+            validate(request.json, Reservation.get_schema())
         except ValidationError:
             return create_error_message(
                 400, "Invalid JSON document",
@@ -95,9 +95,9 @@ class ReservationItem(Resource):
             )
 
         data = request.get_json()
-        inventory_item.name = data['name']
-        inventory_item.description = data['description']
-        inventory_item.price = data['price']
+        reservation.name = data['name']
+        reservation.description = data['description']
+        reservation.price = data['price']
 
         try:
             db.session.commit()
