@@ -4,6 +4,7 @@ from project.models.models import Menu, Restaurant, Inventory, Reservation
 from project import db
 from jsonschema import validate, ValidationError
 from flask_restful import Resource
+import datetime
 
 
 class ReservationCollection(Resource):
@@ -95,9 +96,11 @@ class ReservationItem(Resource):
             )
 
         data = request.get_json()
-        reservation.name = data['name']
+
+        reservation.date = datetime.datetime.strptime(data['date'], "%Y-%m-%d").date()
+        reservation.from_time = datetime.datetime.strptime(data['from_time'], "%H:%M:%S").time()
+        reservation.to_time = datetime.datetime.strptime(data['to_time'], "%H:%M:%S").time()
         reservation.description = data['description']
-        reservation.price = data['price']
 
         try:
             db.session.commit()
