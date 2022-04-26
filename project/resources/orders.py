@@ -41,7 +41,7 @@ class OrderItem(Resource):
     def get(cls, order_id):
 
         try:
-            order = db.session.query(Order).filter_by(id=order_id).join(Restaurant).join(User). first()
+            order = db.session.query(Order).filter_by(id=order_id).join(Restaurant).join(User).first()
 
             return order.serialize()
         except:
@@ -68,7 +68,8 @@ class OrderItem(Resource):
         try:
             data = request.get_json()
 
-            new_order = Order(user_id=data['user_id'], restaurant_id=data['restaurant_id'], menu_id=data['menu_id'], qty=data['qty'], status=data['status'])
+            new_order = Order(user_id=data['user_id'], restaurant_id=data['restaurant_id'], menu_id=data['menu_id'],
+                              qty=data['qty'], status=data['status'])
 
             db.session.add(new_order)
             db.session.commit()
@@ -99,9 +100,11 @@ class OrderItem(Resource):
             )
 
         data = request.get_json()
-        db_role.name = data['name']
-        db_role.description = data['description']
-        db_role.price = data['price']
+        db_role.user_id = data['user_id']
+        db_role.restaurant_id = data['restaurant_id']
+        db_role.menu_id = data['menu_id']
+        db_role.qty = data['qty']
+        db_role.status = data['status']
 
         try:
             db.session.commit()
@@ -114,9 +117,11 @@ class OrderItem(Resource):
         return make_response('Success', 201, {'message': 'Successfully updated!"'})
 
     @classmethod
-    @token_required
+    # @token_required
     def delete(cls, order_id):
-        db.session.query().filter_by(id=order_id).delete()
-        db.session.commit()
+        order_item = Order.query.filter_by(id=order_id).delete()
 
-        return make_response('Success', 204, {'message': 'Successfully deleted!"'})
+        if order_item:
+            return make_response('Success', 204, {'message': 'Successfully deleted!"'})
+        else:
+            return make_response('Error', 400, {'message': 'Cannot delete something went wrong'})

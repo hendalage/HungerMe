@@ -28,4 +28,4 @@ api.add_resource(MenuItem, "/menu/new", "/menu/update/<string:menu_id>", "/menu/
 
 # oder related resources
 api.add_resource(OrderCollection, "/oder/list/<uuid:restaurant_id>")
-api.add_resource(OrderItem, "/oder/new", "/oder/update/<string:oder_id>", "/oder/delete/<string:oder_id>", "/oder/get/<string:oder_id>")
+api.add_resource(OrderItem, "/oder/new", "/oder/update/<string:order_id>", "/oder/delete/<string:order_id>", "/oder/get/<string:order_id>")
