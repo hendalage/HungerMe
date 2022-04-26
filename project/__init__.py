@@ -49,25 +49,23 @@ def create_app(test_config=None):
     db.init_app(app)
     cache.init_app(app)
 
-    from project.converters import (UserConverter, MenuConverter, OrderConverter)
+    from project.converters import (UserConverter, MenuConverter, InventoryConverter, OrderConverter)
 
     # Add converters
     app.url_map.converters["User"] = UserConverter
     app.url_map.converters["Menu"] = MenuConverter
     app.url_map.converters["Order"] = OrderConverter
-    # app.url_map.converters["Organization"] = OrganizationConverter
-    # app.url_map.converters["LeavePlan"] = LeavePlanConverter
-    # app.url_map.converters["Employee"] = EmployeeConverter
+    app.url_map.converters["Inventory"] = InventoryConverter
 
     from project.dbutils import init_db_command
     from . import api
 
     app.cli.add_command(init_db_command)
-    app.register_blueprint(api.api_bp)
+    # app.register_blueprint(api.api_bp)
 
-    @app.route('/hello', methods=['GET'])
-    def hello():
-        return 'Hello, World!'
+    # @app.route('/hello', methods=['GET'])
+    # def hello():
+    #     return 'Hello, World!'
 
     return app
 
