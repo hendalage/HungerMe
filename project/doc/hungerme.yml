@@ -14,34 +14,6 @@ components:
       required: true
       schema:
         type: string
-#    organization_id:
-#      description: organization id
-#      in: path
-#      name: organization_id
-#      required: true
-#      schema:
-#        type: string
-#    department_id:
-#      description: department id
-#      in: path
-#      name: department_id
-#      required: true
-#      schema:
-#        type: string
-#    employee_id:
-#      description: employee id
-#      in: path
-#      name: employee_id
-#      required: true
-#      schema:
-#        type: string
-#    leaveplan_id:
-#      description: leave plan id
-#      in: path
-#      name: leaveplan_id
-#      required: true
-#      schema:
-#        type: string
   schemas:
     Menu:
       properties:
@@ -60,6 +32,9 @@ components:
         status:
           description: Menu status
           type: boolean
+        menu_id:
+          description: Menu id
+          type: string
       required:
       - name
       - description
@@ -86,10 +61,10 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 paths:
-  /menus/list/{restaurant_id}:
+  /menu/list/{restaurant_id}:
     get:
       tags:
-        - menus
+        - Menus
       description: Get the list of menus by restaurant
       responses:
         '200':
@@ -103,604 +78,90 @@ paths:
                 restaurant_id: 3a9e5c1a-acdb-450c-a85d-dfcaface1976
                 price: 12.30
                 status: 1
-#    post:
-#      tags:
-#        - Menus
-#      description: Create a new menu
-#      requestBody:
-#        description: JSON document that contains basic data for a new menu
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/Menu'
-#            example:
-#              - name: Pizza
-#              - description: Large Kaana Pizza
-#              - restaurant_id: 3a9e5c1a-acdb-450c-a85d-dfcaface1976
-#              - price: 12.30
-#              status: 1
-#      responses:
-#        '200':
-#          description: The Menu was created successfully
-#        '400':
-#          description: The request body was not valid
-#        '415':
-#          description: Wrong media type was used
-#  /menu/{menu_id}/:
-#    parameters:
-#    - $ref: '#/components/parameters/menu_id'
-#    get:
-#      tags:
-#        - organizations
-#      description: Get details of one organization
-#      responses:
-#        '200':
-#          description: Data of single organization
-#          content:
-#            application/json:
-#              examples:
-#                organizations:
-#                  description: A organization of en employee
-#                  value:
-#                    name: organization 1
-#                    location: location1
-#                    organization_id: O01
-#        '404':
-#          description: The organization was not found
-#    put:
-#      tags:
-#        - organizations
-#      description: Replace organization's basic data with new values
-#      requestBody:
-#        description: JSON document that contains new basic data for the organization
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/Organization'
-#            example:
-#              name: organization 1
-#              location: location 2
-#              organization_id: O01
-#      responses:
-#        '204':
-#          description: The organization's attributes were updated successfully
-#        '400':
-#          description: The request body was not valid
-#        '404':
-#          description: The organization was not found
-#        '409':
-#          description: A organization with the same name already exists
-#        '415':
-#          description: Wrong media type was used
-#    delete:
-#      tags:
-#        - organizations
-#      description: Delete the selected organization
-#      responses:
-#        '204':
-#          description: The organization was successfully deleted
-#        '404':
-#          description: The organization was not found
-
-#
-#  /departments/:
-#    get:
-#      tags:
-#        - departments
-#      description: Get the list of managed department
-#      responses:
-#        '200':
-#          description: List of department
-#          content:
-#            application/json:
-#              example:
-#              - department_id: D01
-#                name: dept 1
-#                description: department number 1
-#              - organization_id: D02
-#                name: dept 2
-#                description: department 2
-#    post:
-#      tags:
-#        - departments
-#      description: Create a new department
-#      requestBody:
-#        description: JSON document that contains basic data for a new department
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/Department'
-#            example:
-#              name: department1
-#              description: department 1
-#              department_id: D05
-#      responses:
-#        '201':
-#          description: The department was created successfully
-#        '400':
-#          description: The request body was not valid
-#        '409':
-#          description: A department with the same code already exists
-#        '415':
-#          description: Wrong media type was used
-#  /departments/{department_id}/:
-#    parameters:
-#    - $ref: '#/components/parameters/department_id'
-#    get:
-#      tags:
-#        - departments
-#      description: Get details of one department
-#      responses:
-#        '200':
-#          description: Data of single department
-#          content:
-#            application/json:
-#              examples:
-#                departments:
-#                  description: A department of en employee
-#                  value:
-#                    name: department 1
-#                    location: department
-#                    department_id: D01
-#        '404':
-#          description: The department was not found
-#    put:
-#      tags:
-#        - departments
-#      description: Replace department's basic data with new values
-#      requestBody:
-#        description: JSON document that contains new basic data for the department
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/Department'
-#            example:
-#              name: department 1
-#              description: department 2
-#              department_id: D01
-#      responses:
-#        '204':
-#          description: The department's attributes were updated successfully
-#        '400':
-#          description: The request body was not valid
-#        '404':
-#          description: The department was not found
-#        '409':
-#          description: A department with the same name already exists
-#        '415':
-#          description: Wrong media type was used
-#    delete:
-#      tags:
-#        - departments
-#      description: Delete the selected department
-#      responses:
-#        '204':
-#          description: The department was successfully deleted
-#        '404':
-#          description: The department was not found
-#
-#
-#  /employees/:
-#    get:
-#      tags:
-#        - employees
-#      description: Get the list of managed employees
-#      security:
-#        - HRSystemKey: [admin]
-#      responses:
-#        '200':
-#          description: List of employees
-#          content:
-#            application/json:
-#              example:
-#              - employee_id: E01
-#                first_name: test 1
-#                middle_name: middle 1
-#                last_name: last name 1
-#                address: oulu
-#                gender: M
-#                date_of_birth: "1998-08-25T11:20:30"
-#                appointment_date: "2005-08-25T11:20:30"
-#                active_emp: 1
-#                prefix_title: MR
-#                marritial_status: SINGLE
-#                mobile_no: N756982365
-#                basic_salary: 56665
-#                account_number: FI545455
-#              - employee_id: E02
-#                first_name: test 2
-#                middle_name: middle 2
-#                last_name: last name 2
-#                address: oulu
-#                gender: F
-#                date_of_birth: "1998-08-25T11:20:30"
-#                appointment_date: "2005-08-25T11:20:30"
-#                active_emp: 1
-#                prefix_title: MISS
-#                marritial_status: SINGLE
-#                mobile_no: N756982365
-#                basic_salary: 56665
-#                account_number: FI54545k
-#
-#  /organizations/{organization_id}/roles/{role_code}/employees/:
-#    get:
-#      tags:
-#        - employees
-#      description: Get the list of managed employees based on their organization and role
-#      security:
-#        - HRSystemKey: [admin]
-#      parameters:
-#        - $ref: '#/components/parameters/organization_id'
-#        - $ref: '#/components/parameters/role_code'
-#      responses:
-#        '200':
-#          description: List of employees
-#          content:
-#            application/json:
-#              example:
-#              - employee_id: E01
-#                first_name: test 1
-#                middle_name: middle 1
-#                last_name: last name 1
-#                address: oulu
-#                gender: M
-#                date_of_birth: "1998-08-25T11:20:30"
-#                appointment_date: "2005-08-25T11:20:30"
-#                active_emp: 1
-#                prefix_title: MR
-#                marritial_status: SINGLE
-#                mobile_no: N756982365
-#                basic_salary: 56665
-#                account_number: FI545455
-#              - employee_id: E02
-#                first_name: test 2
-#                middle_name: middle 2
-#                last_name: last name 2
-#                address: oulu
-#                gender: F
-#                date_of_birth: "1998-08-25T11:20:30"
-#                appointment_date: "2005-08-25T11:20:30"
-#                active_emp: 1
-#                prefix_title: MISS
-#                marritial_status: SINGLE
-#                mobile_no: N756982365
-#                basic_salary: 56665
-#                account_number: FI54545k
-#
-#  /organizations/{organization_id}/employees/:
-#    get:
-#      tags:
-#        - employees
-#      description: Get the list of employees in same organization
-#      security:
-#        - HRSystemKey: [admin]
-#      parameters:
-#        - $ref: '#/components/parameters/organization_id'
-#      responses:
-#        '200':
-#          description: List of employees
-#          content:
-#            application/json:
-#              example:
-#              - employee_id: E01
-#                first_name: test 1
-#                middle_name: middle 1
-#                last_name: last name 1
-#                address: oulu
-#                gender: M
-#                date_of_birth: "1998-08-25T11:20:30"
-#                appointment_date: "2005-08-25T11:20:30"
-#                active_emp: 1
-#                prefix_title: MR
-#                marritial_status: SINGLE
-#                mobile_no: N756982365
-#                basic_salary: 56665
-#                account_number: FI545455
-#              - employee_id: E02
-#                first_name: test 2
-#                middle_name: middle 2
-#                last_name: last name 2
-#                address: oulu
-#                gender: F
-#                date_of_birth: "1998-08-25T11:20:30"
-#                appointment_date: "2005-08-25T11:20:30"
-#                active_emp: 1
-#                prefix_title: MISS
-#                marritial_status: SINGLE
-#                mobile_no: N756982365
-#                basic_salary: 56665
-#                account_number: FI54545k
-#
-#  /organizations/{organization_id}/departments/{department_id}/employees/:
-#    get:
-#      tags:
-#        - employees
-#      description: Get the list of employees in same organization and same department
-#      security:
-#        - HRSystemKey: [admin]
-#      parameters:
-#        - $ref: '#/components/parameters/organization_id'
-#        - $ref: '#/components/parameters/department_id'
-#      responses:
-#        '200':
-#          description: List of employees
-#          content:
-#            application/json:
-#              example:
-#              - employee_id: E01
-#                first_name: test 1
-#                middle_name: middle 1
-#                last_name: last name 1
-#                address: oulu
-#                gender: M
-#                date_of_birth: "1998-08-25T11:20:30"
-#                appointment_date: "2005-08-25T11:20:30"
-#                active_emp: 1
-#                prefix_title: MR
-#                marritial_status: SINGLE
-#                mobile_no: N756982365
-#                basic_salary: 56665
-#                account_number: FI545455
-#              - employee_id: E02
-#                first_name: test 2
-#                middle_name: middle 2
-#                last_name: last name 2
-#                address: oulu
-#                gender: F
-#                date_of_birth: "1998-08-25T11:20:30"
-#                appointment_date: "2005-08-25T11:20:30"
-#                active_emp: 1
-#                prefix_title: MISS
-#                marritial_status: SINGLE
-#                mobile_no: N756982365
-#                basic_salary: 56665
-#                account_number: FI54545k
-#
-#  /organizations/{organization_id}/departments/{department_id}/roles/{role_code}/employees/:
-#    get:
-#      tags:
-#        - employees
-#      description: Get the list of employees in same organization and same department and same role category
-#      security:
-#        - HRSystemKey: [admin]
-#      parameters:
-#        - $ref: '#/components/parameters/organization_id'
-#        - $ref: '#/components/parameters/department_id'
-#        - $ref: '#/components/parameters/role_code'
-#      responses:
-#        '200':
-#          description: List of employees
-#          content:
-#            application/json:
-#              example:
-#              - employee_id: E01
-#                first_name: test 1
-#                middle_name: middle 1
-#                last_name: last name 1
-#                address: oulu
-#                gender: M
-#                date_of_birth: "1998-08-25T11:20:30"
-#                appointment_date: "2005-08-25T11:20:30"
-#                active_emp: 1
-#                prefix_title: MR
-#                marritial_status: SINGLE
-#                mobile_no: N756982365
-#                basic_salary: 56665
-#                account_number: FI545455
-#              - employee_id: E02
-#                first_name: test 2
-#                middle_name: middle 2
-#                last_name: last name 2
-#                address: oulu
-#                gender: F
-#                date_of_birth: "1998-08-25T11:20:30"
-#                appointment_date: "2005-08-25T11:20:30"
-#                active_emp: 1
-#                prefix_title: MISS
-#                marritial_status: SINGLE
-#                mobile_no: N756982365
-#                basic_salary: 56665
-#                account_number: FI54545k
-#
-#  /organizations/{organization_id}/departments/{department_id}/roles/{role_code}/employees/:
-#    post:
-#      tags:
-#        - employees
-#      description: Create a new employee
-#      parameters:
-#        - $ref: '#/components/parameters/organization_id'
-#        - $ref: '#/components/parameters/department_id'
-#        - $ref: '#/components/parameters/role_code'
-#      requestBody:
-#        description: JSON document that contains basic data for a new employee
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/Employee'
-#            example:
-#              employee_id: E01
-#              first_name: test emp
-#              middle_name: middle name
-#              last_name: last name 1
-#              address: oulu
-#              gender: M
-#              date_of_birth: "1998-08-25T11:20:30"
-#              appointment_date: "2005-08-25T11:20:30"
-#              active_emp: 1
-#              prefix_title: MR
-#              marritial_status: SINGLE
-#              mobile_no: N756982365
-#              basic_salary: 56665
-#              account_number: FI545455
-#      responses:
-#        '201':
-#          description: The employee was created successfully
-#        '400':
-#          description: The request body was not valid
-#        '409':
-#          description: A employee with the same code already exists
-#        '415':
-#          description: Wrong media type was used
-#
-#  /employees/{employee_id}/:
-#    parameters:
-#    - $ref: '#/components/parameters/employee_id'
-#    get:
-#      tags:
-#        - employees
-#      description: Get details of one employee
-#      security:
-#        - HRSystemKey: []
-#      responses:
-#        '200':
-#          description: Data of single employee
-#          content:
-#            application/json:
-#              examples:
-#                departments:
-#                  description: employee data
-#                  value:
-#                    employee_id: E01
-#                    first_name: test 1
-#                    middle_name: middle 1
-#                    last_name: last name 1
-#                    address: oulu
-#                    gender: M
-#                    date_of_birth: "1998-08-25T11:20:30"
-#                    appointment_date: "2005-08-25T11:20:30"
-#                    active_emp: 1
-#                    prefix_title: MR
-#                    marritial_status: SINGLE
-#                    mobile_no: N756982365
-#                    basic_salary: 56665
-#                    account_number: FI545455
-#        '404':
-#          description: The employee was not found
-#    put:
-#      tags:
-#        - employees
-#      description: Replace employee's basic data with new values
-#      requestBody:
-#        description: JSON document that contains new basic data for the employee
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/Employee'
-#            example:
-#              employee_id: E01
-#              first_name: test 1
-#              middle_name: middle 1
-#              last_name: last name 1
-#              address: oulu
-#              gender: M
-#              date_of_birth: "1998-08-25T11:20:30"
-#              appointment_date: "2005-08-25T11:20:30"
-#              active_emp: 1
-#              prefix_title: MR
-#              marritial_status: SINGLE
-#              mobile_no: N756982365
-#              basic_salary: 56665
-#              account_number: FI545455
-#      responses:
-#        '204':
-#          description: The employee's attributes were updated successfully
-#        '400':
-#          description: The request body was not valid
-#        '404':
-#          description: The employee was not found
-#        '409':
-#          description: A employee with the same name already exists
-#        '415':
-#          description: Wrong media type was used
-#    delete:
-#      tags:
-#        - employees
-#      description: Delete the selected employee
-#      responses:
-#        '204':
-#          description: The employee was successfully deleted
-#        '404':
-#          description: The employee was not found
-#
-#  /employees/{employee_id}/leaveplans/:
-#    parameters:
-#    - $ref: '#/components/parameters/employee_id'
-#    get:
-#      tags:
-#        - leaveplans
-#      description: Get the leaveplans
-#      responses:
-#        '200':
-#          description: List of leaves
-#          content:
-#            application/json:
-#              example:
-#              - id: 1
-#                leave_type: MEDICAL
-#                reason: fever
-#                leave_date: "1998-08-25T11:20:30"
-#              - id: 2
-#                leave_type: CASUAL
-#                reason: fever
-#                leave_date: "1998-08-25T11:20:30"
-#    post:
-#      tags:
-#        - leaveplans
-#      description: Create a new leave
-#      requestBody:
-#        description: JSON document that contains basic data for a new leave
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/LeavePlan'
-#            example:
-#              leave_type: CASUAL
-#              reason: fever
-#              leave_date: "1998-08-25T11:20:30"
-#      responses:
-#        '201':
-#          description: The leave was created successfully
-#        '400':
-#          description: The request body was not valid
-#        '409':
-#          description: A leave with the same id already exists
-#        '415':
-#          description: Wrong media type was used
-#
-#  /leaveplans/{leaveplan_id}/:
-#    parameters:
-#    - $ref: '#/components/parameters/leaveplan_id'
-#    put:
-#      tags:
-#        - leaveplans
-#      description: Replace leaveplan's basic data with new values
-#      requestBody:
-#        description: JSON document that contains new basic data for the leaveplan
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/LeavePlan'
-#            example:
-#              leave_type: MEDICAL
-#              reason: fever
-#              leave_date: "1998-08-25T11:20:30"
-#      responses:
-#        '204':
-#          description: The leaveplan's attributes were updated successfully
-#        '400':
-#          description: The request body was not valid
-#        '404':
-#          description: The leaveplan was not found
-#        '409':
-#          description: A leaveplan with the same name already exists
-#        '415':
-#          description: Wrong media type was used
-#    delete:
-#      tags:
-#        - leaveplans
-#      description: Delete the selected leaveplan
-#      responses:
-#        '204':
-#          description: The leaveplan was successfully deleted
-#        '404':
-#          description: The leaveplan was not found
+  /menu/get/{menu_id}:
+    get:
+      tags:
+        - Menus
+      description: Get a menu by menu id
+      responses:
+        '200':
+          description: JSON document that contains basic data for a new menu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+              example:
+                - id: 319c42f7-3035-4ad9-8b86-9de37ae62a4d
+                  name: Pizza
+                  description: Large Kaana Pizza
+                  price: 12.30
+                  restaurant_name: Oulu Restaurant
+                  restaurant_address: Rajakyla
+                  restaurant_contact_no: +358996633215
+        '400':
+          description: The request body was not valid
+        '415':
+          description: Wrong media type was used
+  /menu/new:
+    post:
+      tags:
+        - Menus
+      description: Create a new menu
+      requestBody:
+        description: JSON document that contains basic data for a new menu
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Menu'
+            example:
+              - id: 319c42f7-3035-4ad9-8b86-9de37ae62a4d
+                name: Pizza
+                description: Large Kaana Pizza
+                restaurant_id: 3a9e5c1a-acdb-450c-a85d-dfcaface1976
+                price: 12.30
+                status: 1
+      responses:
+        '200':
+          description: The Menu was created successfully
+        '400':
+          description: The request body was not valid
+        '415':
+          description: Wrong media type was used
+  /menu/update/{menu_id}:
+    put:
+      tags:
+        - Menus
+      description: Create a new menu
+      requestBody:
+        description: JSON document that contains basic data for a new menu
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Menu'
+            example:
+              - id: 319c42f7-3035-4ad9-8b86-9de37ae62a4d
+                name: Pizza
+                description: Large Kaana Pizza
+                price: 12.30
+                status: 1
+      responses:
+        '200':
+          description: The Menu was created successfully
+        '400':
+          description: The request body was not valid
+        '415':
+          description: Wrong media type was used
+  /menu/delete/{menu_id}:
+    delete:
+      tags:
+        - Menus
+      description: Create a new menu
+      requestBody:
+        description: JSON document that contains basic data for a new menu
+      responses:
+        '200':
+          description: The Menu was created successfully
+        '400':
+          description: The request body was not valid
+        '415':
+          description: Wrong media type was used
