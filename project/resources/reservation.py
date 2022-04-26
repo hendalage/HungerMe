@@ -20,9 +20,9 @@ class ReservationCollection(Resource):
                 'id': reservation.id,
                 'user_id': reservation.user_id,
                 'restaurant_id': reservation.restaurant_id,
-                'date': reservation.date,
-                'from_time': reservation.from_time,
-                'to_time': reservation.to_time,
+                'date': reservation.date.strftime("%d/%m/%Y"),
+                'from_time': reservation.from_time.strftime("%H:%M:%S"),
+                'to_time': reservation.to_time.strftime("%H:%M:%S"),
                 'created_at': reservation.created_at,
                 'updated_at': reservation.updated_at,
                 'description': reservation.description,
@@ -79,7 +79,8 @@ class ReservationItem(Resource):
     # @token_required
     def put(cls, reservation_id):
 
-        reservation = Reservation.query.filter_by(id=reservation_id).first()
+        # reservation = Reservation.query.filter_by(id=reservation_id).first()
+        # print(str(reservation))
 
         if not request.json:
             return create_error_message(
@@ -95,15 +96,24 @@ class ReservationItem(Resource):
                 "JSON format is not valid"
             )
 
-        data = request.get_json()
-
-        reservation.date = datetime.datetime.strptime(data['date'], "%Y-%m-%d").date()
-        reservation.from_time = datetime.datetime.strptime(data['from_time'], "%H:%M:%S").time()
-        reservation.to_time = datetime.datetime.strptime(data['to_time'], "%H:%M:%S").time()
-        reservation.description = data['description']
+        # data = request.get_json()
+        #
+        # reservation.date = datetime.datetime.strptime(data['date'], "%Y-%m-%d").date()
+        # reservation.from_time = datetime.datetime.strptime(data['from_time'], "%H:%M:%S").time()
+        # reservation.to_time = datetime.datetime.strptime(data['to_time'], "%H:%M:%S").time()
+        # reservation.description = data['description']
+        # print(reservation.serialize())
 
         try:
+            reservation = Reservation.query.filter_by(id=reservation_id).first()
+            data = request.get_json()
+
+            reservation.date = datetime.datetime.strptime(data['date'], "%Y-%m-%d").date()
+            reservation.from_time = datetime.datetime.strptime(data['from_time'], "%H:%M:%S").time()
+            reservation.to_time = datetime.datetime.strptime(data['to_time'], "%H:%M:%S").time()
+            reservation.description = data['description']
             db.session.commit()
+            # print(db.session.query())
         except:
             return create_error_message(
                 500, "Internal server Error",
