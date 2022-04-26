@@ -61,7 +61,7 @@ def create_app(test_config=None):
     from . import api
 
     app.cli.add_command(init_db_command)
-    # app.register_blueprint(api.api_bp)
+    app.register_blueprint(api.api_bp)
 
     # @app.route('/hello', methods=['GET'])
     # def hello():

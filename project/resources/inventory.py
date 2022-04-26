@@ -106,9 +106,9 @@ class InventoryItem(Resource):
         return make_response('Success', 201, {'message': 'Successfully updated!"'})
 
     @classmethod
-    @token_required
+    # @token_required
     def delete(cls, inventory_id):
-        db.session.query().filter_by(id=inventory_id).delete()
+        db.session.query(Inventory).filter_by(id=inventory_id).delete()
         db.session.commit()
 
         return make_response('Success', 204, {'message': 'Successfully deleted!"'})

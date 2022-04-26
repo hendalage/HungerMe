@@ -80,7 +80,7 @@ class MenuItem(Resource):
     # @token_required
     def put(cls, menu_id):
 
-        db_role = Menu.query.filter_by(id=menu_id).first()
+        db_role = db.session.query(Menu).filter_by(id=menu_id).first()
 
         if not request.json:
             return create_error_message(
@@ -112,9 +112,9 @@ class MenuItem(Resource):
         return make_response('Success', 201, {'message': 'Successfully updated!"'})
 
     @classmethod
-    @token_required
+    # @token_required
     def delete(cls, menu_id):
-        db.session.query().filter_by(id=menu_id).delete()
+        db.session.query(Menu).filter_by(id=menu_id).delete()
         db.session.commit()
 
         return make_response('Success', 204, {'message': 'Successfully deleted!"'})
