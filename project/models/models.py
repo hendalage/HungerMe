@@ -36,6 +36,36 @@ class Restaurant(Base):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
 
+    @staticmethod
+    def get_schema():
+        """
+        method to get schema
+        """
+        schema = {
+            "type": "object",
+            "required": ["name", "address"]
+        }
+        props = schema["properties"] = {}
+        props["name"] = {
+            "description": "Restaurant name",
+            "type": "string"
+        }
+        props["address"] = {
+            "description": "Restaurant address",
+            "type": "string"
+        }
+        return schema
+
+    def serialize(self):
+        role = {
+            "name": self.name,
+            "address": self.address,
+            "contact_no": self.contact_no,
+            "created_at": self.created_at.strftime("%a, %d %b %Y %H:%M:%S %Z"),
+            "updated_at": self.updated_at.strftime("%a, %d %b %Y %H:%M:%S %Z")
+        }
+        return role
+
 
 class Employee(Base):
     __tablename__ = 'employee'
