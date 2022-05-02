@@ -242,19 +242,20 @@ class Order(Base):
         }
         props["qty"] = {
             "description": "Quantity",
-            "type": "number"
+            "type": "string"
         }
-        props["status"] = {
-            "description": "order status",
-            "type": "number"
-        }
+        # props["status"] = {
+        #     "description": "order status",
+        #     "type": "number"
+        # }
         return schema
 
     def serialize(self):
         role = {
-            "user_id": self.user_id,
-            "restaurant_id": self.restaurant_id,
-            "menu_id": self.menu_id,
+            "id": str(self.id),
+            "user_id": str(self.user_id),
+            "restaurant_id": str(self.restaurant_id),
+            "menu_id": str(self.menu_id),
             "quantity": self.qty,
             "status": self.status
         }
