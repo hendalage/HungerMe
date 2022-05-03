@@ -21,12 +21,12 @@ api.add_resource(UserCollection, "/user/")
 api.add_resource(LoginCollection, "/login")
 
 # menu related resources
-api.add_resource(MenuCollection, "/menu/list/<uuid:restaurant_id>")
-api.add_resource(MenuItem, "/menu/new", "/menu/update/<string:menu_id>", "/menu/delete/<string:menu_id>", "/menu/get/<string:menu_id>")
+api.add_resource(MenuCollection, "/menu/<uuid:restaurant_id>")
+api.add_resource(MenuItem, "/menu/<uuid:restaurant_id>/<uuid:menu_id>")
 
 # oder related resources
 api.add_resource(OrderCollection, "/order/<uuid:restaurant_id>")
-api.add_resource(OrderItem, "/oder/<uuid:restaurant_id>/<uuid:order_id>")
+api.add_resource(OrderItem, "/order/<uuid:restaurant_id>/<uuid:order_id>")
 
 # Inventory related resources
 api.add_resource(InventoryCollection, "/inventory/<uuid:restaurant_id>")

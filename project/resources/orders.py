@@ -11,41 +11,29 @@ class OrderCollection(Resource):
     @classmethod
     # @token_required
     def get(cls, restaurant_id):
-        orders = db.session.query(Order).filter_by(restaurant_id=restaurant_id).join(Restaurant).join(Menu).all()
-
+        orders = Order.query.filter_by(restaurant_id=restaurant_id).all()
         order_list = []
         print(orders)
         for order in orders:
-            order_data = {}
-            order_data['id'] = order.id
-            order_data['restaurant_id'] = order.restaurant_id
-            order_data['status'] = order.status
-            order_data['restaurant_name'] = order.restaurant.name
-            order_data['restaurant_address'] = order.restaurant.address
-            order_data['restaurant_contact_no'] = order.restaurant.contact_no
-            order_data['menu_name'] = order.menu.name
-            order_data['qty'] = order.qty
-            order_data['menu_description'] = order.menu.description
+            order_data = {
+                'id': order.id,
+                'user_id': order.user_id,
+                'restaurant_id': order.restaurant_id,
+                'status': order.status,
+                'restaurant_name': order.restaurant.name,
+                'restaurant_address': order.restaurant.address,
+                'restaurant_contact_no': order.restaurant.contact_no,
+                'menu_name': order.menu.name,
+                'qty': order.qty,
+                'menu_description': order.menu.description
+            }
             order_list.append(order_data)
 
         return jsonify({'orders': order_list})
 
-
-class OrderItem(Resource):
-
     @classmethod
     # @token_required
-    def get(cls, order_id):
-
-        try:
-            order = db.session.query(Order).filter_by(id=order_id).first()
-            return order.serialize()
-        except:
-            return make_response('Could not find order item', 400, {'message': 'Please check your order!"'})
-
-    @classmethod
-    # @token_required
-    def post(cls):
+    def post(cls, restaurant_id):
 
         if not request.json:
             return create_error_message(
@@ -64,8 +52,13 @@ class OrderItem(Resource):
         try:
             data = request.get_json()
 
-            new_order = Order(user_id=data['user_id'], restaurant_id=data['restaurant_id'], menu_id=data['menu_id'],
-                              qty=data['qty'], status=data['status'])
+            new_order = Order(
+                user_id=data['user_id'],
+                restaurant_id=str(restaurant_id),
+                menu_id=data['menu_id'],
+                qty=data['qty'],
+                status=data['status']
+            )
 
             db.session.add(new_order)
             db.session.commit()
@@ -75,11 +68,21 @@ class OrderItem(Resource):
             print(e)
             return make_response('Could not add order', 400, {'message': 'Please check your items!"'})
 
+
+class OrderItem(Resource):
+
     @classmethod
     # @token_required
-    def put(cls, order_id):
+    def get(cls, restaurant_id, order_id):
+        try:
+            order = db.session.query(Order).filter_by(id=order_id).filter_by(restaurant_id=restaurant_id).first()
+            return order.serialize()
+        except:
+            return make_response('Could not find order item', 400, {'message': 'Please check your order!"'})
 
-        db_role = db.session.query(Order).filter_by(id=order_id).first()
+    @classmethod
+    # @token_required
+    def put(cls, restaurant_id, order_id):
 
         if not request.json:
             return create_error_message(
@@ -95,31 +98,37 @@ class OrderItem(Resource):
                 "JSON format is not valid"
             )
 
-        data = request.get_json()
-        db_role.user_id = data['user_id']
-        db_role.restaurant_id = data['restaurant_id']
-        db_role.menu_id = data['menu_id']
-        db_role.qty = data['qty']
-        db_role.status = data['status']
-
         try:
+            db_role = db.session.query(Order).filter_by(id=order_id).filter_by(restaurant_id=restaurant_id).first()
+            data = request.get_json()
+            db_role.user_id = data['user_id']
+            db_role.restaurant_id = data['restaurant_id']
+            db_role.menu_id = data['menu_id']
+            db_role.qty = data['qty']
+            db_role.status = data['status']
+
             db.session.commit()
         except:
             return create_error_message(
                 500, "Internal server Error",
-                "Error while updating the menu"
+                "Error while updating the Order"
             )
 
         return make_response('Success', 201, {'message': 'Successfully updated!"'})
 
     @classmethod
     # @token_required
-    def delete(cls, order_id):
-        order_item = db.session.query(Order).filter_by(id=order_id).delete()
+    def delete(cls, restaurant_id, order_id):
+        try:
+            temp_data = db.session.query(Order).filter_by(id=order_id).filter_by(restaurant_id=restaurant_id).first()
+            if temp_data is None:
+                return make_response('Order not found!', 400, {'message': 'Order cannot be deleted!'})
+        except:
+            return create_error_message(
+                500, "Internal server Error",
+                "Error while retrieving information from db"
+            )
+        db.session.query(Order).filter_by(id=order_id).delete()
         db.session.commit()
-
-        if order_item:
-            return make_response('Success', 204, {'message': 'Successfully deleted!"'})
-        else:
-            return make_response('Error', 400, {'message': 'Cannot delete something went wrong'})
+        return make_response('Order successfully deleted', 201, {'message': 'Successfully deleted!'})
 

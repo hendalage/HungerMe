@@ -178,7 +178,8 @@ class Menu(Base):
             "price": self.price,
             "restaurant_name": self.restaurant.name,
             "restaurant_address": self.restaurant.address,
-            "restaurant_contact_no": self.restaurant.contact_no
+            "restaurant_contact_no": self.restaurant.contact_no,
+            "restaurant_id": str(self.restaurant_id)
         }
         return role
 
@@ -229,26 +230,50 @@ class Order(Base):
         }
         props = schema["properties"] = {}
         props["user_id"] = {
-            "description": "User_id",
+            "description": "Ordered user ID",
             "type": "string"
         }
         props["restaurant_id"] = {
-            "description": "Restaurant id",
+            "description": "Order placed restaurant",
             "type": "string"
         }
         props["menu_id"] = {
-            "description": "Menu id",
+            "description": "Ordered menu ID",
             "type": "string"
         }
-        props["qty"] = {
-            "description": "Quantity",
+        props["status"] = {
+            "description": "Order status",
             "type": "string"
         }
-        # props["status"] = {
-        #     "description": "order status",
-        #     "type": "number"
-        # }
         return schema
+
+    # @staticmethod
+    # def get_schema():
+    #     """
+    #     method to get schema
+    #     """
+    #     schema = {
+    #         "type": "object"
+    #         # "required": ["user_id"]
+    #     }
+    #     props = schema["properties"] = {}
+    #     props["user_id"] = {
+    #         "description": "User_id",
+    #         "type": "string"
+    #     }
+    #     # props["restaurant_id"] = {
+    #     #     "description": "Restaurant id",
+    #     #     "type": "string"
+    #     # }
+    #     props["menu_id"] = {
+    #         "description": "Menu id",
+    #         "type": "string"
+    #     }
+    #     props["qty"] = {
+    #         "description": "Quantity",
+    #         "type": "string"
+    #     }
+    #     return schema
 
     def serialize(self):
         role = {

@@ -41,6 +41,7 @@ class ReservationCollection(Resource):
                 415, "Unsupported media type",
                 "Payload format is in an unsupported format"
             )
+
         try:
             validate(request.json, Reservation.get_schema())
         except ValidationError:
@@ -48,6 +49,7 @@ class ReservationCollection(Resource):
                 400, "Invalid JSON document",
                 "JSON format is not valid"
             )
+
         try:
             data = request.get_json()
             temp_data = db.session.query(Reservation).filter_by(user_id=data['user_id']).first()

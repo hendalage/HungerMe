@@ -16,37 +16,24 @@ class MenuCollection(Resource):
         menu_list = []
         print(menus)
         for menu in menus:
-            menu_data = {}
-            menu_data['id'] = menu.id
-            menu_data['name'] = menu.name
-            menu_data['description'] = menu.description
-            menu_data['restaurant_id'] = menu.restaurant_id
-            menu_data['price'] = menu.price
-            menu_data['status'] = menu.status
-            menu_data['restaurant_name'] = menu.restaurant.name
-            menu_data['restaurant_address'] = menu.restaurant.address
-            menu_data['restaurant_contact_no'] = menu.restaurant.contact_no
+            menu_data = {
+                'id': menu.id,
+                'name': menu.name,
+                'description': menu.description,
+                'restaurant_id': menu.restaurant_id,
+                'price': menu.price,
+                'status': menu.status,
+                'restaurant_name': menu.restaurant.name,
+                'restaurant_address': menu.restaurant.address,
+                'restaurant_contact_no': menu.restaurant.contact_no
+            }
             menu_list.append(menu_data)
 
         return jsonify({'menus': menu_list})
 
-
-class MenuItem(Resource):
-
     @classmethod
     # @token_required
-    def get(cls, menu_id):
-
-        try:
-            menu = db.session.query(Menu).filter_by(id=menu_id).join(Restaurant).first()
-
-            return menu.serialize()
-        except:
-            return make_response('Could not find menu item', 400, {'message': 'Please check your entries!"'})
-
-    @classmethod
-    # @token_required
-    def post(cls):
+    def post(cls, restaurant_id):
 
         if not request.json:
             return create_error_message(
@@ -65,8 +52,13 @@ class MenuItem(Resource):
         try:
             data = request.get_json()
 
-            new_menu = Menu(name=data['name'], description=data['description'], restaurant_id=data['restaurant_id'], price=data['price'],
-                            status=data['status'])
+            new_menu = Menu(
+                name=data['name'],
+                description=data['description'],
+                restaurant_id=data['restaurant_id'],
+                price=data['price'],
+                status=data['status']
+            )
 
             db.session.add(new_menu)
             db.session.commit()
@@ -76,11 +68,22 @@ class MenuItem(Resource):
             print(e)
             return make_response('Could not add menu item', 400, {'message': 'Please check your entries!"'})
 
+
+class MenuItem(Resource):
+
     @classmethod
     # @token_required
-    def put(cls, menu_id):
+    def get(cls, restaurant_id, menu_id):
 
-        db_role = db.session.query(Menu).filter_by(id=menu_id).first()
+        try:
+            menu = db.session.query(Menu).filter_by(id=menu_id).filter_by(restaurant_id=restaurant_id).join(Restaurant).first()
+            return menu.serialize()
+        except:
+            return make_response('Could not find menu item', 400, {'message': 'Please check your entries!"'})
+
+    @classmethod
+    # @token_required
+    def put(cls, restaurant_id, menu_id):
 
         if not request.json:
             return create_error_message(
@@ -96,12 +99,14 @@ class MenuItem(Resource):
                 "JSON format is not valid"
             )
 
-        data = request.get_json()
-        db_role.name = data['name']
-        db_role.description = data['description']
-        db_role.price = data['price']
-
         try:
+            db_role = db.session.query(Menu).filter_by(id=menu_id).filter_by(restaurant_id=restaurant_id).first()
+            data = request.get_json()
+            db_role.name = data['name']
+            db_role.description = data['description']
+            db_role.price = data['price']
+            db_role.restaurant_id = data['restaurant_id']
+
             db.session.commit()
         except:
             return create_error_message(
@@ -113,8 +118,17 @@ class MenuItem(Resource):
 
     @classmethod
     # @token_required
-    def delete(cls, menu_id):
+    def delete(cls, restaurant_id, menu_id):
+        try:
+            temp_data = db.session.query(Menu).filter_by(id=menu_id).filter_by(restaurant_id=restaurant_id).first()
+            if temp_data is None:
+                return make_response('Menu not found!', 400, {'message': 'Menu cannot be deleted!'})
+        except:
+            return create_error_message(
+                500, "Internal server Error",
+                "Error while retrieving information from db"
+            )
         db.session.query(Menu).filter_by(id=menu_id).delete()
         db.session.commit()
 
-        return make_response('Success', 204, {'message': 'Successfully deleted!"'})
+        return make_response('Menu successfully deleted', 201, {'message': 'Successfully deleted!"'})
