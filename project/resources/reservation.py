@@ -99,7 +99,6 @@ class ReservationItem(Resource):
                 415, "Unsupported media type",
                 "Payload format is in an unsupported format"
             )
-
         try:
             validate(request.json, Reservation.get_schema())
         except ValidationError:
@@ -107,9 +106,8 @@ class ReservationItem(Resource):
                 400, "Invalid JSON document",
                 "JSON format is not valid"
             )
-
         try:
-            reservation = db.session.query(Reservation).filter_by(user_id=_id).first()
+            reservation = db.session.query(Reservation).filter_by(user_id=user_id).filter_by(restaurant_id=restaurant_id).first()
             data = request.get_json()
 
             reservation.date = datetime.datetime.strptime(data['date'], "%d-%m-%Y").date()
@@ -117,13 +115,11 @@ class ReservationItem(Resource):
             reservation.to_time = datetime.datetime.strptime(data['to_time'], "%H:%M:%S").time()
             reservation.description = data['description']
             db.session.commit()
-            # print(db.session.query())
         except:
             return create_error_message(
                 500, "Internal server Error",
                 "Error while updating the reservation"
             )
-
         return make_response('Success', 201, {'message': 'Successfully updated!"'})
 
     @classmethod
