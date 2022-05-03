@@ -51,6 +51,6 @@ class LoginCollection(Resource):
                 {'id': str(user.id), 'exp': datetime.utcnow() + timedelta(minutes=30)},
                 'thisissecret')
 
-            return jsonify({'token': token})
+            return jsonify({'token': token, 'user_id': user.id})
 
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})

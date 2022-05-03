@@ -1,6 +1,6 @@
 from flask import Response, request, jsonify, make_response
 from project.utils import create_error_message, token_required
-from project.models.models import Restaurant, User, Order
+from project.models.models import Restaurant, User, Order, Menu
 from project import db
 from jsonschema import validate, ValidationError
 from flask_restful import Resource
@@ -11,24 +11,21 @@ class OrderCollection(Resource):
     @classmethod
     # @token_required
     def get(cls, restaurant_id):
-        orders = db.session.query(Order).filter_by(restaurant_id=restaurant_id).join(Restaurant).join(User).all()
+        orders = db.session.query(Order).filter_by(restaurant_id=restaurant_id).join(Restaurant).join(Menu).all()
 
         order_list = []
         print(orders)
         for order in orders:
             order_data = {}
             order_data['id'] = order.id
-            order_data['name'] = order.name
-            order_data['description'] = order.description
             order_data['restaurant_id'] = order.restaurant_id
-            order_data['price'] = order.price
             order_data['status'] = order.status
             order_data['restaurant_name'] = order.restaurant.name
             order_data['restaurant_address'] = order.restaurant.address
             order_data['restaurant_contact_no'] = order.restaurant.contact_no
-            order_data['user_name'] = order.user.name
-            order_data['user_contact_no'] = order.user.contact_no
-            order_data['user_address'] = order.user.address
+            order_data['menu_name'] = order.menu.name
+            order_data['qty'] = order.qty
+            order_data['menu_description'] = order.menu.description
             order_list.append(order_data)
 
         return jsonify({'orders': order_list})
@@ -41,7 +38,7 @@ class OrderItem(Resource):
     def get(cls, order_id):
 
         try:
-            order = db.session.query(Order).filter_by(id=order_id).join(Restaurant).join(User).first()
+            order = db.session.query(Order).filter_by(id=order_id).first()
             return order.serialize()
         except:
             return make_response('Could not find order item', 400, {'message': 'Please check your order!"'})
@@ -82,7 +79,7 @@ class OrderItem(Resource):
     # @token_required
     def put(cls, order_id):
 
-        db_role = Order.query.filter_by(id=order_id).first()
+        db_role = db.session.query(Order).filter_by(id=order_id).first()
 
         if not request.json:
             return create_error_message(
@@ -118,7 +115,8 @@ class OrderItem(Resource):
     @classmethod
     # @token_required
     def delete(cls, order_id):
-        order_item = Order.query.filter_by(id=order_id).delete()
+        order_item = db.session.query(Order).filter_by(id=order_id).delete()
+        db.session.commit()
 
         if order_item:
             return make_response('Success', 204, {'message': 'Successfully deleted!"'})

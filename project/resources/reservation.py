@@ -79,9 +79,6 @@ class ReservationItem(Resource):
     # @token_required
     def put(cls, reservation_id):
 
-        # reservation = Reservation.query.filter_by(id=reservation_id).first()
-        # print(str(reservation))
-
         if not request.json:
             return create_error_message(
                 415, "Unsupported media type",
@@ -96,14 +93,6 @@ class ReservationItem(Resource):
                 "JSON format is not valid"
             )
 
-        # data = request.get_json()
-        #
-        # reservation.date = datetime.datetime.strptime(data['date'], "%Y-%m-%d").date()
-        # reservation.from_time = datetime.datetime.strptime(data['from_time'], "%H:%M:%S").time()
-        # reservation.to_time = datetime.datetime.strptime(data['to_time'], "%H:%M:%S").time()
-        # reservation.description = data['description']
-        # print(reservation.serialize())
-
         try:
             reservation = Reservation.query.filter_by(id=reservation_id).first()
             data = request.get_json()
@@ -117,7 +106,7 @@ class ReservationItem(Resource):
         except:
             return create_error_message(
                 500, "Internal server Error",
-                "Error while updating the menu"
+                "Error while updating the reservation"
             )
 
         return make_response('Success', 201, {'message': 'Successfully updated!"'})
