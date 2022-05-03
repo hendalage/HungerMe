@@ -42,7 +42,6 @@ class OrderItem(Resource):
 
         try:
             order = db.session.query(Order).filter_by(id=order_id).join(Restaurant).join(User).first()
-
             return order.serialize()
         except:
             return make_response('Could not find order item', 400, {'message': 'Please check your order!"'})
@@ -125,3 +124,4 @@ class OrderItem(Resource):
             return make_response('Success', 204, {'message': 'Successfully deleted!"'})
         else:
             return make_response('Error', 400, {'message': 'Cannot delete something went wrong'})
+
