@@ -56,8 +56,12 @@ def _populate_db():
     menu = Menu(name="Pizza Menu0", description="Large Pizza slices",
                 restaurant_id="3a9e5c1a-acdb-450c-a85d-dfcaface1976", price=12.00,
                 status=1)
-
     db.session.add(menu)
+
+    order = Order(user_id="49b9deb3-0258-405f-ac0f-6382a7994664", restaurant_id="3a9e5c1a-acdb-450c-a85d-dfcaface1976",
+                  menu_id="2a31bf85-e61d-4fd0-8bfa-b676bc14fe50", qty=22, status=1)
+    db.session.add(order)
+
     db.session.commit()
 
 
@@ -70,6 +74,15 @@ def _get_menu_put_json(menu_id="3a9e5c1a-acdb-450c-a85d-dfcaface1976"):
     return {"menu_id": menu_id, "name": "Pizza Menu1", "description": "Large Pizza slices", "price": 11.30,
             "status": 1}
 
+def _get_order_json(order_id="2e811150-31fc-47fe-9b5c-cc3ad4a8d590"):
+    return {"order_id": order_id, "user_id": "49b9deb3-0258-405f-ac0f-6382a7994664", "restaurant_id": "3a9e5c1a-acdb-450c-a85d-dfcaface1976",
+            "menu_id": "2a31bf85-e61d-4fd0-8bfa-b676bc14fe50", "quantity": 22,
+            "status": 1}
+
+def _get_order_put_json(order_id="3a9e5c1a-acdb-450c-a85d-dfcaface1976"):
+    return {"user_id": "49b9deb3-0258-405f-ac0f-6382a7994664", "restaurant_id": "3a9e5c1a-acdb-450c-a85d-dfcaface1976",
+            "menu_id": "2a31bf85-e61d-4fd0-8bfa-b676bc14fe50", "quantity": 22,
+            "status": 1}
 
 class TestMenuCollection(object):
     RESOURCE_URL = "/api/menu/list/3a9e5c1a-acdb-450c-a85d-dfcaface1976"
@@ -80,6 +93,14 @@ class TestMenuCollection(object):
         body = json.loads(res.data)
         assert len(body) > 0
 
+class TestOrderCollection(object):
+    RESOURCE_URL = "/api/order/list/3a9e5c1a-acdb-450c-a85d-dfcaface1976"
+
+    def test_get(self, client):
+        res = client.get(self.RESOURCE_URL)
+        assert res.status_code == 200
+        body = json.loads(res.data)
+        assert len(body) > 0
 
 class TestMenuItem(object):
     RESOURCE_URL = "/api/menu/"
@@ -101,4 +122,26 @@ class TestMenuItem(object):
 
     def test_delete(self, client):
         res = client.post(self.RESOURCE_URL + 'delete/319c42f7-3035-4ad9-8b86-9de37ae62a4d')
+        assert res.status_code == 204
+
+class TestOderItem(object):
+    RESOURCE_URL = "/api/order/"
+
+    def test_get(self, client):
+        res = client.get(self.RESOURCE_URL + 'get/2e811150-31fc-47fe-9b5c-cc3ad4a8d590')
+        assert res.status_code == 200
+        body = json.loads(res.data)
+
+    def test_post(self, client):
+        order = _get_menu_json()
+        res = client.post(self.RESOURCE_URL + 'new', data=json.dumps(order))
+        assert res.status_code == 200
+
+    def test_put(self, client):
+        order = _get_menu_put_json()
+        res = client.post(self.RESOURCE_URL + 'update/2e811150-31fc-47fe-9b5c-cc3ad4a8d590', data=json.dumps(order))
+        assert res.status_code == 201
+
+    def test_delete(self, client):
+        res = client.post(self.RESOURCE_URL + 'delete/2e811150-31fc-47fe-9b5c-cc3ad4a8d590')
         assert res.status_code == 204
