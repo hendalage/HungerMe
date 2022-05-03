@@ -285,19 +285,27 @@ class Reservation(Base):
         """
         schema = {
             "type": "object",
-            "required": ["user_id", "restaurant_id"]
+            "required": ["user_id", "date", "from_time", "to_time"]
         }
         props = schema["properties"] = {}
         props["user_id"] = {
-            "description": "Reserved user",
+            "description": "Reserved user ID",
+            "type": "string"
+        }
+        props["date"] = {
+            "description": "Reserved date",
+            "type": "string"
+        }
+        props["from_time"] = {
+            "description": "Reservation start time",
+            "type": "string"
+        }
+        props["to_time"] = {
+            "description": "Reservation end time",
             "type": "string"
         }
         props["description"] = {
-            "description": "Item description",
-            "type": "string"
-        }
-        props["restaurant_id"] = {
-            "description": "Restaurant id",
+            "description": "Reservation description",
             "type": "string"
         }
         return schema

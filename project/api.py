@@ -33,11 +33,11 @@ api.add_resource(InventoryCollection, "/inventory/list/<uuid:restaurant_id>")
 api.add_resource(InventoryItem, "/inventory/new", "/inventory/update/<string:inventory_id>", "/inventory/delete/<string:inventory_id>", "/inventory/get/<string:inventory_id>")
 
 # Reservation related resources
-api.add_resource(ReservationCollection, "/reservation/list/<uuid:_id>")
-api.add_resource(ReservationItem, "/reservation/<uuid:_id>")
+api.add_resource(ReservationCollection, "/reservation/<uuid:restaurant_id>")
+api.add_resource(ReservationItem, "/reservation/<uuid:restaurant_id>/<uuid:user_id>")
 
 # Restaurant related resources
-api.add_resource(RestaurantCollection, "/restaurant/list/")
-api.add_resource(RestaurantItem, "/restaurant/new", "/restaurant/update/<string:restaurant_id>", "/restaurant/delete/<string:restaurant_id>", "/restaurant/get/<string:restaurant_id>")
+api.add_resource(RestaurantCollection, "/restaurant/")
+api.add_resource(RestaurantItem, "/restaurant/<uuid:restaurant_id>")
 
 

@@ -11,8 +11,8 @@ class ReservationCollection(Resource):
 
     @classmethod
     # @token_required
-    def get(cls, _id):
-        reservation_collection = db.session.query(Reservation).filter_by(restaurant_id=_id).join(Restaurant).all()
+    def get(cls, restaurant_id):
+        reservation_collection = db.session.query(Reservation).filter_by(restaurant_id=restaurant_id).join(Restaurant).all()
         reservation_list = []
         print(reservation_collection)
         for reservation in reservation_collection:
@@ -31,29 +31,16 @@ class ReservationCollection(Resource):
                 'restaurant_contact_no': reservation.restaurant.contact_no
             }
             reservation_list.append(reservation_data)
-        return jsonify({'inventory_items': reservation_list})
-
-
-class ReservationItem(Resource):
+        return jsonify({'current_reservations': reservation_list})
 
     @classmethod
     # @token_required
-    def get(cls, _id):  # 08bb1373-7b11-4d32-a5f4-d40cbf63fa3f
-        try:
-            reservation = db.session.query(Reservation).filter_by(user_id=_id).join(Restaurant).first()
-            return reservation.serialize()
-        except:
-            return make_response('Could not find reservation', 400, {'message': 'Please check your entries!"'})
-
-    @classmethod
-    # @token_required
-    def post(cls, _id):
+    def post(cls, restaurant_id):
         if not request.json:
             return create_error_message(
                 415, "Unsupported media type",
                 "Payload format is in an unsupported format"
             )
-
         try:
             validate(request.json, Reservation.get_schema())
         except ValidationError:
@@ -65,13 +52,25 @@ class ReservationItem(Resource):
             data = request.get_json()
             temp_data = db.session.query(Reservation).filter_by(user_id=data['user_id']).first()
             if temp_data is not None:
-                return make_response('Only one reservation per user is allowed!', 400, {'message': 'Could not add reservation'})
+                return make_response(
+                    'Only one reservation per user is allowed!', 400,
+                    {'message': 'Could not add reservation'}
+                )
         except Exception as e:
             print(e)
-            return make_response('Could not add reservation', 400, {'message': 'Please check your entries!'})
-
+            return make_response(
+                'Could not add reservation', 400,
+                {'message': 'Please check your entries!'}
+            )
         try:
-            new_reservation = Reservation(user_id=data['user_id'], restaurant_id=data['restaurant_id'], date=data['date'], from_time=data['from_time'], to_time=data['to_time'], description=data['description'])
+            new_reservation = Reservation(
+                user_id=data['user_id'],
+                restaurant_id=restaurant_id,
+                date=data['date'],
+                from_time=data['from_time'],
+                to_time=data['to_time'],
+                description=data['description']
+            )
             db.session.add(new_reservation)
             db.session.commit()
             return jsonify({'message': 'New item added to the reservation successfully!'})
@@ -79,9 +78,21 @@ class ReservationItem(Resource):
             print(e)
             return make_response('Could not add reservation', 400, {'message': 'Please check your entries!"'})
 
+
+class ReservationItem(Resource):
+
     @classmethod
     # @token_required
-    def put(cls, _id):
+    def get(cls, restaurant_id, user_id):  # 08bb1373-7b11-4d32-a5f4-d40cbf63fa3f
+        try:
+            reservation = db.session.query(Reservation).filter_by(user_id=user_id).filter_by(restaurant_id=restaurant_id).first()
+            return reservation.serialize()
+        except:
+            return make_response('Could not find reservation', 400, {'message': 'Please check your entries!"'})
+
+    @classmethod
+    # @token_required
+    def put(cls, restaurant_id, user_id):
 
         if not request.json:
             return create_error_message(
@@ -117,9 +128,9 @@ class ReservationItem(Resource):
 
     @classmethod
     #@token_required
-    def delete(cls, _id):
+    def delete(cls, restaurant_id, user_id):
         try:
-            temp_data = db.session.query(Reservation).filter_by(user_id=_id).first()
+            temp_data = db.session.query(Reservation).filter_by(user_id=user_id).filter_by(restaurant_id=restaurant_id).first()
             if temp_data is None:
                 return make_response('Reservation not found!', 400, {'message': 'Reservation cannot be deleted!'})
         except:
@@ -127,6 +138,6 @@ class ReservationItem(Resource):
                 500, "Internal server Error",
                 "Error while retrieving information from db"
             )
-        db.session.query(Reservation).filter_by(user_id=_id).delete()
+        db.session.query(Reservation).filter_by(user_id=user_id).delete()
         db.session.commit()
         return make_response('Reservation successfully deleted', 201, {'message': 'Successfully deleted!'})
