@@ -28,21 +28,9 @@ class InventoryCollection(Resource):
             inventory_list.append(inventory_data)
         return jsonify({'inventory_items': inventory_list})
 
-
-class InventoryItem(Resource):
-
     @classmethod
     # @token_required
-    def get(cls, inventory_id):
-        try:
-            inventory_item = db.session.query(Inventory).filter_by(id=inventory_id).join(Restaurant).first()
-            return inventory_item.serialize()
-        except:
-            return make_response('Could not find menu item', 400, {'message': 'Please check your entries!"'})
-
-    @classmethod
-    # @token_required
-    def post(cls):
+    def post(cls, restaurant_id):
         if not request.json:
             return create_error_message(
                 415, "Unsupported media type",
@@ -59,8 +47,12 @@ class InventoryItem(Resource):
 
         try:
             data = request.get_json()
-
-            new_item = Inventory(restaurant_id=data['restaurant_id'], name=data['name'], description=data['description'], qty=data['qty'])
+            new_item = Inventory(
+                restaurant_id=restaurant_id,
+                name=data['name'],
+                description=data['description'],
+                qty=data['qty']
+            )
 
             db.session.add(new_item)
             db.session.commit()
@@ -70,11 +62,21 @@ class InventoryItem(Resource):
             print(e)
             return make_response('Could not add inventory item', 400, {'message': 'Please check your entries!"'})
 
+
+class InventoryItem(Resource):
+
     @classmethod
     # @token_required
-    def put(cls, inventory_id):
+    def get(cls, restaurant_id, inventory_id):
+        try:
+            inventory_item = db.session.query(Inventory).filter_by(id=inventory_id).filter_by(restaurant_id=restaurant_id).join(Restaurant).first()
+            return inventory_item.serialize()
+        except:
+            return make_response('Could not find menu item', 400, {'message': 'Please check your entries!"'})
 
-        inventory_item = Inventory.query.filter_by(id=inventory_id).first()
+    @classmethod
+    # @token_required
+    def put(cls, restaurant_id, inventory_id):
 
         if not request.json:
             return create_error_message(
@@ -90,25 +92,35 @@ class InventoryItem(Resource):
                 "JSON format is not valid"
             )
 
-        data = request.get_json()
-        inventory_item.name = data['name']
-        inventory_item.description = data['description']
-        inventory_item.price = data['price']
-
         try:
+            inventory_item = db.session.query(Inventory).filter_by(id=inventory_id).filter_by(restaurant_id=restaurant_id).first()
+            data = request.get_json()
+
+            inventory_item.name = data['name']
+            inventory_item.description = data['description']
+            inventory_item.qty = data['qty']
             db.session.commit()
         except:
             return create_error_message(
                 500, "Internal server Error",
-                "Error while updating the menu"
+                "Error while updating the inventory"
             )
 
         return make_response('Success', 201, {'message': 'Successfully updated!"'})
 
     @classmethod
     # @token_required
-    def delete(cls, inventory_id):
-        db.session.query(Inventory).filter_by(id=inventory_id).delete()
+    def delete(cls, restaurant_id, inventory_id):
+        try:
+            temp_data = db.session.query(Inventory).filter_by(id=inventory_id).filter_by(restaurant_id=restaurant_id).first()
+            if temp_data is None:
+                return make_response('Item not found!', 400, {'message': 'Item cannot be deleted!'})
+        except:
+            return create_error_message(
+                500, "Internal server Error",
+                "Error while retrieving information from db"
+            )
+        db.session.query(Inventory).filter_by(id=inventory_id).filter_by(restaurant_id=restaurant_id).delete()
         db.session.commit()
 
         return make_response('Success', 204, {'message': 'Successfully deleted!"'})

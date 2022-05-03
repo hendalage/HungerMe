@@ -25,12 +25,12 @@ api.add_resource(MenuCollection, "/menu/list/<uuid:restaurant_id>")
 api.add_resource(MenuItem, "/menu/new", "/menu/update/<string:menu_id>", "/menu/delete/<string:menu_id>", "/menu/get/<string:menu_id>")
 
 # oder related resources
-api.add_resource(OrderCollection, "/order/list/<uuid:restaurant_id>")
-api.add_resource(OrderItem, "/order/new", "/oder/update/<string:order_id>", "/order/delete/<string:order_id>", "/order/get/<string:order_id>")
+api.add_resource(OrderCollection, "/order/<uuid:restaurant_id>")
+api.add_resource(OrderItem, "/oder/<uuid:restaurant_id>/<uuid:order_id>")
 
 # Inventory related resources
-api.add_resource(InventoryCollection, "/inventory/list/<uuid:restaurant_id>")
-api.add_resource(InventoryItem, "/inventory/new", "/inventory/update/<string:inventory_id>", "/inventory/delete/<string:inventory_id>", "/inventory/get/<string:inventory_id>")
+api.add_resource(InventoryCollection, "/inventory/<uuid:restaurant_id>")
+api.add_resource(InventoryItem, "/inventory/<uuid:restaurant_id>/<uuid:inventory_id>")
 
 # Reservation related resources
 api.add_resource(ReservationCollection, "/reservation/<uuid:restaurant_id>")

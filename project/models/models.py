@@ -104,7 +104,7 @@ class Inventory(Base):
         """
         schema = {
             "type": "object",
-            "required": ["name", "restaurant_id"]
+            "required": ["name"]
         }
         props = schema["properties"] = {}
         props["name"] = {
