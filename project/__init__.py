@@ -49,13 +49,14 @@ def create_app(test_config=None):
     db.init_app(app)
     cache.init_app(app)
 
-    from project.converters import (UserConverter, MenuConverter, InventoryConverter, OrderConverter)
+    from project.converters import (UserConverter, MenuConverter, InventoryConverter, OrderConverter, RestaurantConverter)
 
     # Add converters
     app.url_map.converters["User"] = UserConverter
     app.url_map.converters["Menu"] = MenuConverter
     app.url_map.converters["Order"] = OrderConverter
     app.url_map.converters["Inventory"] = InventoryConverter
+    app.url_map.converters["Restaurant"] = RestaurantConverter
 
     from project.dbutils import init_db_command
     from . import api
