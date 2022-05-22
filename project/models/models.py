@@ -6,16 +6,8 @@ from sqlalchemy import BigInteger, Column, Float, Date, DateTime, ForeignKey, In
 from sqlalchemy.orm import relationship, scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-# Base = declarative_base()
-# metadata = Base.metadata
-# engine = create_engine('postgresql://postgres:1234@localhost/hm1')
-# Base.metadata.create_all(engine)
-# db_session = scoped_session(sessionmaker())
-# Session = sessionmaker()
-# session = Session.configure(bind=engine)
-# Base.query = session.query_property()
 
-SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:1234@localhost/hm1'
+SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:1234@localhost/hm2'
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -24,13 +16,15 @@ Base = declarative_base()
 # Note the line below
 Base.query = session.query_property()
 
+# Base = declarative_base()
+# metadata = Base.metadata
 
 
 class Restaurant(Base):
     __tablename__ = 'restaurant'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(255))
+    name = Column(String(255), nullable=False, unique=True)
     address = Column(String(255))
     contact_no = Column(String(15))
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
@@ -89,7 +83,7 @@ class Inventory(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     restaurant_id = Column(ForeignKey('restaurant.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
-    name = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=False, unique=True)
     description = Column(String(255), nullable=False)
     qty = Column(Integer, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
@@ -137,7 +131,7 @@ class Menu(Base):
     __tablename__ = 'menu'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=False, unique=True)
     description = Column(String(255), nullable=False)
     restaurant_id = Column(ForeignKey('restaurant.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     price = Column(Float, nullable=True)
@@ -348,4 +342,5 @@ class Reservation(Base):
         }
         return role
 
-
+# engine = create_engine('postgresql://postgres:1234@localhost/hm2')
+# Base.metadata.create_all(engine)

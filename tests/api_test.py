@@ -17,7 +17,7 @@ def client():
     """
     db_fd, db_fname = tempfile.mkstemp()
     config = {
-        "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:1234@localhost/hm1",
+        "SQLALCHEMY_DATABASE_URI": "postgresql://postgres:1234@localhost/hm2",
         "TESTING": True
     }
 

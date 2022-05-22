@@ -22,10 +22,10 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY="dev",
-        SQLALCHEMY_DATABASE_URI="postgresql://postgres:1234@localhost/hm1",
+        SQLALCHEMY_DATABASE_URI="postgresql://postgres:1234@localhost/hm2",
         SQLALCHEMY_TRACK_MODIFICATIONS=False
     )
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost/hm1'
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost/hm2'
 
     app.config["SWAGGER"] = {
         "title": "HungerMe API",
@@ -49,7 +49,13 @@ def create_app(test_config=None):
     db.init_app(app)
     cache.init_app(app)
 
-    from project.converters import (UserConverter, MenuConverter, InventoryConverter, OrderConverter, RestaurantConverter)
+    from project.converters import (
+        UserConverter,
+        MenuConverter,
+        InventoryConverter,
+        OrderConverter,
+        RestaurantConverter
+    )
 
     # Add converters
     app.url_map.converters["User"] = UserConverter
