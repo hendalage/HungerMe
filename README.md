@@ -3,8 +3,8 @@
 # Group information
 * Student 1. Ashan Chameera , awalpita20@student.oulu.fi
 * Student 2. Piushana Abeygunawardane
-* Student 3. Chathushka Hendalage 
-* Student 3. Nishita Weerasinghe
+* Student 3. Chathushka Hendalage , chathushka.hendalage@student.oulu.fi
+* Student 3. Nisita Weerasinghe
 
 __*Remember to include all required documentation and HOWTOs, including how to create and populate the database, how to run and test the API, the url to the entrypoint and instructions on how to setup and run the client__
 
