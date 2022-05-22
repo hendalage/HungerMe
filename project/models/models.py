@@ -54,6 +54,7 @@ class Restaurant(Base):
         role = {
             "name": self.name,
             "address": self.address,
+            "id": self.id,
             "contact_no": self.contact_no,
             "created_at": self.created_at.strftime("%a, %d %b %Y %H:%M:%S %Z"),
             "updated_at": self.updated_at.strftime("%a, %d %b %Y %H:%M:%S %Z")
@@ -83,7 +84,7 @@ class Inventory(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     restaurant_id = Column(ForeignKey('restaurant.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
-    name = Column(String(255), nullable=False, unique=True)
+    name = Column(String(255), nullable=False)
     description = Column(String(255), nullable=False)
     qty = Column(Integer, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
@@ -118,6 +119,7 @@ class Inventory(Base):
     def serialize(self):
         role = {
             "name": self.name,
+            "id": str(self.id),
             "description": self.description,
             "qty": self.qty,
             "restaurant_name": self.restaurant.name,
@@ -148,7 +150,7 @@ class Menu(Base):
         """
         schema = {
             "type": "object",
-            "required": ["name", "restaurant_id"]
+            "required": ["name"]
         }
         props = schema["properties"] = {}
         props["name"] = {
@@ -168,12 +170,12 @@ class Menu(Base):
     def serialize(self):
         role = {
             "name": self.name,
+            "id": str(self.id),
             "description": self.description,
             "price": self.price,
             "restaurant_name": self.restaurant.name,
             "restaurant_address": self.restaurant.address,
-            "restaurant_contact_no": self.restaurant.contact_no,
-            "restaurant_id": str(self.restaurant_id)
+            "restaurant_contact_no": self.restaurant.contact_no
         }
         return role
 
@@ -182,7 +184,7 @@ class User(Base):
     __tablename__ = 'user'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(255))
+    name = Column(String(255), nullable=False, unique=True)
     email = Column(String(255), nullable=False)
     contact_no = Column(String(15))
     password = Column(String(255))
@@ -241,34 +243,6 @@ class Order(Base):
         }
         return schema
 
-    # @staticmethod
-    # def get_schema():
-    #     """
-    #     method to get schema
-    #     """
-    #     schema = {
-    #         "type": "object"
-    #         # "required": ["user_id"]
-    #     }
-    #     props = schema["properties"] = {}
-    #     props["user_id"] = {
-    #         "description": "User_id",
-    #         "type": "string"
-    #     }
-    #     # props["restaurant_id"] = {
-    #     #     "description": "Restaurant id",
-    #     #     "type": "string"
-    #     # }
-    #     props["menu_id"] = {
-    #         "description": "Menu id",
-    #         "type": "string"
-    #     }
-    #     props["qty"] = {
-    #         "description": "Quantity",
-    #         "type": "string"
-    #     }
-    #     return schema
-
     def serialize(self):
         role = {
             "id": str(self.id),
@@ -304,7 +278,7 @@ class Reservation(Base):
         """
         schema = {
             "type": "object",
-            "required": ["user_id", "date", "from_time", "to_time"]
+            "required": ["date", "from_time", "to_time"]
         }
         props = schema["properties"] = {}
         props["user_id"] = {
@@ -331,7 +305,9 @@ class Reservation(Base):
 
     def serialize(self):
         role = {
+            "id": str(self.id),
             "name": self.user.name,
+            "user_id": str(self.user_id),
             "contact_no": self.user.contact_no,
             "date": self.date.strftime("%m/%d/%Y"),
             "from_time": self.from_time.strftime("%H:%M:%S"),

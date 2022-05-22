@@ -21,23 +21,23 @@ api.add_resource(UserCollection, "/user/")
 api.add_resource(LoginCollection, "/login")
 
 # menu related resources
-api.add_resource(MenuCollection, "/menu/<uuid:restaurant_id>")
-api.add_resource(MenuItem, "/menu/<uuid:restaurant_id>/<uuid:menu_id>")
+api.add_resource(MenuCollection, "/menu/<restaurant:restaurant>/")
+api.add_resource(MenuItem, "/menu/<restaurant:restaurant>/<uuid:menu_id>/")
 
 # oder related resources
-api.add_resource(OrderCollection, "/order/<uuid:restaurant_id>")
-api.add_resource(OrderItem, "/order/<uuid:restaurant_id>/<uuid:order_id>")
+api.add_resource(OrderCollection, "/order/<restaurant:restaurant>/")
+api.add_resource(OrderItem, "/order/<restaurant:restaurant>/<uuid:order_id>/")
 
 # Inventory related resources
-api.add_resource(InventoryCollection, "/inventory/<uuid:restaurant_id>")
-api.add_resource(InventoryItem, "/inventory/<uuid:restaurant_id>/<uuid:inventory_id>")
+api.add_resource(InventoryCollection, "/inventory/<restaurant:restaurant>/")
+api.add_resource(InventoryItem, "/inventory/<restaurant:restaurant>/<uuid:inventory_id>/")
 
 # Reservation related resources
-api.add_resource(ReservationCollection, "/reservation/<uuid:restaurant_id>")
-api.add_resource(ReservationItem, "/reservation/<uuid:restaurant_id>/<uuid:user_id>")
+api.add_resource(ReservationCollection, "/reservation/<restaurant:restaurant>/")
+api.add_resource(ReservationItem, "/reservation/<restaurant:restaurant>/<uuid:user_id>/")
 
 # Restaurant related resources
 api.add_resource(RestaurantCollection, "/restaurant/")
-api.add_resource(RestaurantItem, "/restaurant/<uuid:restaurant_id>")
+api.add_resource(RestaurantItem, "/restaurant/<restaurant:restaurant>/")
 
 

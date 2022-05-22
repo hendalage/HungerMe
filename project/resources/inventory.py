@@ -10,33 +10,22 @@ class InventoryCollection(Resource):
 
     @classmethod
     # @token_required
-    def get(cls, restaurant_id):
-        inventory_collection = db.session.query(Inventory).filter_by(restaurant_id=restaurant_id).join(Restaurant).all()
+    def get(cls, restaurant):
+        inventory_collection = db.session.query(Inventory).filter_by(restaurant_id=restaurant.id).join(Restaurant).all()
         inventory_list = []
-        print(inventory_collection)
         for item in inventory_collection:
-            inventory_data = {
-                'id': item.id,
-                'restaurant_id': item.restaurant_id,
-                'name': item.name,
-                'description': item.description,
-                'qty': item.qty,
-                'restaurant_name': item.restaurant.name,
-                'restaurant_address': item.restaurant.address,
-                'restaurant_contact_no': item.restaurant.contact_no
-            }
+            inventory_data = item.serialize()
             inventory_list.append(inventory_data)
         return jsonify({'inventory_items': inventory_list})
 
     @classmethod
     # @token_required
-    def post(cls, restaurant_id):
+    def post(cls, restaurant):
         if not request.json:
             return create_error_message(
                 415, "Unsupported media type",
                 "Payload format is in an unsupported format"
             )
-
         try:
             validate(request.json, Inventory.get_schema())
         except ValidationError:
@@ -44,16 +33,14 @@ class InventoryCollection(Resource):
                 400, "Invalid JSON document",
                 "JSON format is not valid"
             )
-
         try:
             data = request.get_json()
             new_item = Inventory(
-                restaurant_id=restaurant_id,
+                restaurant_id=restaurant.id,
                 name=data['name'],
                 description=data['description'],
                 qty=data['qty']
             )
-
             db.session.add(new_item)
             db.session.commit()
 
@@ -67,23 +54,21 @@ class InventoryItem(Resource):
 
     @classmethod
     # @token_required
-    def get(cls, restaurant_id, inventory_id):
-        try:
-            inventory_item = db.session.query(Inventory).filter_by(id=inventory_id).filter_by(restaurant_id=restaurant_id).join(Restaurant).first()
-            return inventory_item.serialize()
-        except:
-            return make_response('Could not find menu item', 400, {'message': 'Please check your entries!"'})
+    def get(cls, restaurant, inventory_id):
+        item = db.session.query(Inventory).filter_by(id=inventory_id).first()
+        if item is not None:
+            return item.serialize()
+        else:
+            return make_response('Item not found!', 400, {'message': 'Item cannot be deleted!'})
 
     @classmethod
     # @token_required
-    def put(cls, restaurant_id, inventory_id):
-
+    def put(cls, restaurant, inventory_id):
         if not request.json:
             return create_error_message(
                 415, "Unsupported media type",
                 "Payload format is in an unsupported format"
             )
-
         try:
             validate(request.json, Inventory.get_schema())
         except ValidationError:
@@ -91,11 +76,9 @@ class InventoryItem(Resource):
                 400, "Invalid JSON document",
                 "JSON format is not valid"
             )
-
         try:
-            inventory_item = db.session.query(Inventory).filter_by(id=inventory_id).filter_by(restaurant_id=restaurant_id).first()
             data = request.get_json()
-
+            inventory_item = db.session.query(Inventory).filter_by(id=inventory_id).first()
             inventory_item.name = data['name']
             inventory_item.description = data['description']
             inventory_item.qty = data['qty']
@@ -105,14 +88,13 @@ class InventoryItem(Resource):
                 500, "Internal server Error",
                 "Error while updating the inventory"
             )
-
         return make_response('Success', 201, {'message': 'Successfully updated!"'})
 
     @classmethod
     # @token_required
-    def delete(cls, restaurant_id, inventory_id):
+    def delete(cls, restaurant, inventory_id):
         try:
-            temp_data = db.session.query(Inventory).filter_by(id=inventory_id).filter_by(restaurant_id=restaurant_id).first()
+            temp_data = db.session.query(Inventory).filter_by(id=inventory_id).first()
             if temp_data is None:
                 return make_response('Item not found!', 400, {'message': 'Item cannot be deleted!'})
         except:
@@ -120,7 +102,8 @@ class InventoryItem(Resource):
                 500, "Internal server Error",
                 "Error while retrieving information from db"
             )
-        db.session.query(Inventory).filter_by(id=inventory_id).filter_by(restaurant_id=restaurant_id).delete()
+        db.session.query(Inventory).filter_by(id=inventory_id).delete()
         db.session.commit()
+
 
         return make_response('Success', 204, {'message': 'Successfully deleted!"'})
