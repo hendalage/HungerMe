@@ -1,9 +1,10 @@
 from flask import Response, request, jsonify, make_response
-from project.utils import create_error_message, token_required
+from project.utils import *
 from project.models.models import Menu, Restaurant, Inventory
 from project import db
 from jsonschema import validate, ValidationError
 from flask_restful import Resource
+from project.constants import *
 
 
 class RestaurantCollection(Resource):
@@ -11,12 +12,29 @@ class RestaurantCollection(Resource):
     @classmethod
     # @token_required
     def get(cls):
+        body = HungerMeBuilder()
+
+        body.add_namespace("hungerme", LINK_RELATIONS_URL)
+        # body.add_control_restaurants_all()
+        body.add_control("self", url_for("api.restaurantcollection"))
+        body.add_control_add_restaurant()
+
+        body["items"] = []
+
         restaurant_collection = db.session.query(Restaurant).all()
-        restaurant_list = []
-        for item in restaurant_collection:
-            restaurant_data = item.serialize()
-            restaurant_list.append(restaurant_data)
-        return jsonify({'restaurant_items': restaurant_list})
+        for db_restaurant in restaurant_collection:
+            item = HungerMeBuilder(
+                db_restaurant.serialize()
+            )
+            # restaurant_data = item.serialize()
+            item.add_control("self", url_for("api.restaurantitem", restaurant=db_restaurant))
+            item.add_control_delete_restaurant(restaurant=db_restaurant)
+            item.add_control_edit_restaurant(restaurant=db_restaurant)
+            item.add_control("profile", RESTAURANT_PROFILE)
+
+            body["items"].append(item)
+        # return jsonify({'restaurant_items': restaurant_list})
+        return Response(json.dumps(body), 200, mimetype=MASON)
 
     @classmethod
     # @token_required
@@ -54,7 +72,20 @@ class RestaurantItem(Resource):
     @classmethod
     # @token_required
     def get(cls, restaurant):
-        return restaurant.serialize()
+        body = HungerMeBuilder(restaurant.serialize())
+        body.add_namespace("hungerme", LINK_RELATIONS_URL)
+        body.add_control("self", url_for("api.restaurantitem", restaurant=restaurant))
+        body.add_control("profile", RESTAURANT_PROFILE)
+        body.add_control("collection", url_for("api.restaurantcollection"))
+        body.add_control_delete_restaurant(restaurant=restaurant)
+        body.add_control_edit_restaurant(restaurant=restaurant)
+
+        body.add_control_add_inventory(restaurant=restaurant)
+        body.add_control_add_reservation(restaurant=restaurant)
+        body.add_control_add_menu(restaurant=restaurant)
+        body.add_control_add_order(restaurant=restaurant)
+
+        return Response(json.dumps(body), 200, mimetype=MASON)
 
     @classmethod
     # @token_required

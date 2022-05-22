@@ -151,7 +151,7 @@ class RestaurantConverter(BaseConverter):
 
     def to_url(self, db_restaurant):
         """
-        return restaurant id
+        return restaurant name
         """
-        return str(db_restaurant.name)
+        return db_restaurant.name
 

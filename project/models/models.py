@@ -54,7 +54,7 @@ class Restaurant(Base):
         role = {
             "name": self.name,
             "address": self.address,
-            "id": self.id,
+            "id": str(self.id),
             "contact_no": self.contact_no,
             "created_at": self.created_at.strftime("%a, %d %b %Y %H:%M:%S %Z"),
             "updated_at": self.updated_at.strftime("%a, %d %b %Y %H:%M:%S %Z")
